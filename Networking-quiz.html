@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemista Exam Simulator - Fixed</title>
+    <style>
+        :root { --primary: #2563eb; --success: #22c55e; --danger: #ef4444; --bg: #f1f5f9; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.6; margin: 0; padding: 20px; }
+        .container { max-width: 850px; margin: 0 auto; }
+        .header { text-align: center; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px; border-top: 8px solid var(--primary); }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid var(--primary); }
+        .question-text { font-size: 1.15em; font-weight: 600; margin-bottom: 20px; color: #0f172a; }
+        .option { display: block; background: #f8fafc; margin: 10px 0; padding: 15px; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .option:hover { background: #e2e8f0; }
+        .correct { background: var(--success) !important; color: white; border-color: #16a34a; }
+        .wrong { background: var(--danger) !important; color: white; border-color: #dc2626; }
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; background: #eff6ff; border: 1px solid #dbeafe; font-size: 0.95em; color: #1e40af; }
+        
+        /* FIX: Schermata risultati visibile e centrata */
+        #results-space { display: none; text-align: center; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 50px; }
+        .score-circle { font-size: 4em; font-weight: 800; color: var(--primary); margin: 20px 0; }
+        .btn-retry { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; cursor: pointer; margin-top: 20px; }
+        .lang-tag { display: inline-block; padding: 4px 10px; border-radius: 5px; font-size: 0.8em; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .ita { background: #dcfce7; color: #166534; }
+        .eng { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-content">
+    <div class="header">
+        <h1>🚀 Exam Simulator v2.1</h1>
+        <p>Sistemista di Rete - 30 Domande</p>
+    </div>
+    <div id="quiz-space"></div>
+</div>
+
+<div class="container" id="results-space">
+    <h1>🏁 Test Completato!</h1>
+    <div class="score-circle" id="final-score">0%</div>
+    <h2 id="final-grade">Voto: 0 / 30</h2>
+    <p id="final-msg" style="font-size: 1.2em; margin-bottom: 30px;"></p>
+    <button class="btn-retry" onclick="window.location.reload()">Riprova il Test</button>
+</div>
+
+<script>
+const quizData = [
+    { q: "Quale livello OSI si occupa della consegna 'End-to-End' e del controllo degli errori?", a: ["Network", "Transport", "Data Link", "Session"], c: 1, f: "Il livello 4 (Transport) garantisce l'integrità dei dati." },
+    { q: "A quale indirizzo MAC viene inviato un frame se l'host è in un'altra sottorete?", a: ["MAC dell'host remoto", "MAC del Default Gateway", "Broadcast FF:FF...", "MAC dello Switch"], c: 1, f: "Il Gateway è il punto di uscita verso altre reti." },
+    { q: "Cosa fa uno switch quando riceve un frame Broadcast?", a: ["Lo scarta", "Lo invia solo al router", "Lo inoltra a tutti", "Lo memorizza"], c: 2, f: "Il broadcast viene propagato su tutte le porte della stessa VLAN." },
+    { q: "Un router riceve un pacchetto con TTL=1. Cosa succede?", a: ["Lo inoltra", "Lo scarta e invia ICMP Time Exceeded", "Aumenta il TTL", "Lo mette in cache"], c: 1, f: "Il router riduce il TTL a 0 e distrugge il pacchetto." },
+    { q: "Quanti host utilizzabili ci sono in una sottorete /29?", a: ["2", "6", "8", "14"], c: 1, f: "2^3 - 2 = 6 host utilizzabili." },
+    { q: "Subnet mask per una rete /27?", a: ["255.255.255.128", "255.255.255.192", "255.255.255.224", "255.255.255.240"], c: 2, f: "128+64+32 = 224." },
+    { q: "Indirizzo IP Multicast usato da OSPF?", a: ["224.0.0.1", "224.0.0.5", "224.0.0.9", "224.0.0.10"], c: 1, f: "224.0.0.5 è per tutti i router OSPF." },
+    { q: "Qual è la Wildcard Mask per 255.255.240.0?", a: ["0.0.0.255", "0.0.15.255", "0.0.7.255", "0.0.31.255"], c: 1, f: "255 - 240 = 15." },
+    { q: "Quale comando mostra le porte in 'Blocking' o 'Forwarding'?", a: ["show interface", "show vlan", "show spanning-tree", "show config"], c: 2, f: "STP gestisce lo stato di blocco delle porte." },
+    { q: "Cos'è l'EtherChannel?", a: ["Una VLAN", "Aggregazione di link fisici", "Un cavo fibra", "Un router"], c: 1, f: "Unisce più cavi per aumentare la banda." },
+    { q: "Cosa si intende per Native VLAN su un trunk 802.1Q?", a: ["VLAN sicura", "Gestisce il traffico non taggato", "VLAN management", "VLAN 100"], c: 1, f: "Serve per i frame che arrivano senza etichetta VLAN." },
+    { q: "In STP, come viene eletto il Root Bridge?", a: ["Velocità", "Priority più bassa", "IP alto", "A caso"], c: 1, f: "Si usa la Priority (default 32768) + MAC." },
+    { q: "Distanza Amministrativa di OSPF?", a: ["1", "90", "110", "120"], c: 2, f: "OSPF = 110." },
+    { q: "Quale protocollo offre ridondanza del Gateway?", a: ["OSPF", "HSRP / VRRP", "STP", "BGP"], c: 1, f: "HSRP crea un gateway virtuale ridondato." },
+    { q: "In una ACL Standard, cosa si filtra?", a: ["IP sorgente + porta", "Solo IP sorgente", "IP destinazione", "Payload"], c: 1, f: "Le ACL Standard guardano solo il mittente." },
+    { q: "Cosa significa 'Implicit Deny'?", a: ["Permesso tutto", "Vietato tutto ciò non permesso", "Firewall spento", "No log"], c: 1, f: "La regola finale di ogni ACL/Firewall." },
+    { q: "Quale porta usa HTTPS?", a: ["80", "443", "22", "53"], c: 1, f: "HTTPS = 443." },
+    { q: "In Zabbix, cos'è un 'Trigger'?", a: ["Un dato", "Una condizione di allarme", "Un grafico", "L'IP"], c: 1, f: "Il trigger dice se un valore è 'fuori norma'." },
+    { q: "A cosa serve l'SNMP Trap?", a: ["Interrogazione", "Avviso push spontaneo", "Hacker block", "Download"], c: 1, f: "Messaggio inviato dall'apparato al server in caso di errore." },
+    { q: "Cos'è il PoE?", a: ["Dati veloci", "Corrente su cavo di rete", "Criptazione", "Fibra"], c: 1, f: "Power over Ethernet." },
+    { q: "Livello 3-tier che applica le ACL?", a: ["Access", "Distribution", "Core", "Internet"], c: 1, f: "Il Distribution layer gestisce le regole di traffico." },
+    { q: "Salvare la config su Cisco?", a: ["save", "copy run start", "write erase", "commit"], c: 1, f: "Copia la configurazione corrente in quella di avvio." },
+    { q: "Protocollo per risolvere nomi in IP?", a: ["ARP", "DHCP", "DNS", "FTP"], c: 2, f: "Domain Name System." },
+    { q: "Differenza switch/hub?", a: ["Nessuna", "Switch legge i MAC", "Hub più veloce", "Cavi diversi"], c: 1, f: "Lo switch instrada, l'hub replica a tutti." },
+    { q: "ENG: Secure remote management protocol?", a: ["Telnet", "SSH", "HTTP", "FTP"], c: 1, f: "SSH encrypts the traffic.", eng: true },
+    { q: "ENG: Single Point of Failure?", a: ["Fast server", "Critical component without backup", "Link", "Rule"], c: 1, f: "If it fails, everything stops.", eng: true },
+    { q: "ENG: Full-Duplex meaning?", a: ["One way", "Two-way simultaneous", "Encrypted", "Wireless"], c: 1, f: "Send and receive at the same time.", eng: true },
+    { q: "ENG: Latency in networking?", a: ["Bandwidth", "Transmission delay", "Protocol", "Router type"], c: 1, f: "Latency is the 'lag' time.", eng: true },
+    { q: "ENG: Device at OSI Layer 3?", a: ["Hub", "Switch", "Router", "Repeater"], c: 2, f: "Routers forward packets.", eng: true },
+    { q: "ENG: Purpose of a Firewall?", a: ["Cooling", "Control traffic", "Speed", "Passwords"], c: 1, f: "Filters traffic based on rules.", eng: true }
+];
+
+let score = 0;
+let answered = 0;
+
+function buildQuiz() {
+    const container = document.getElementById('quiz-space');
+    quizData.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const tagClass = item.eng ? 'eng' : 'ita';
+        const tagText = item.eng ? 'English' : 'Networking';
+        
+        card.innerHTML = `
+            <span class="lang-tag ${tagClass}">${tagText}</span>
+            <div class="question-text">${index + 1}. ${item.q}</div>
+            <div class="options-container"></div>
+            <div class="feedback"><strong>💡 Spiegazione:</strong> ${item.f}</div>
+        `;
+        
+        const optContainer = card.querySelector('.options-container');
+        item.a.forEach((opt, i) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerText = opt;
+            div.onclick = () => checkAnswer(div, i, item.c, card);
+            optContainer.appendChild(div);
+        });
+        container.appendChild(card);
+    });
+}
+
+function checkAnswer(el, selected, correct, card) {
+    if (card.classList.contains('done')) return;
+    card.classList.add('done');
+    
+    const options = card.querySelectorAll('.option');
+    if (selected === correct) {
+        el.classList.add('correct');
+        score++;
+    } else {
+        el.classList.add('wrong');
+        options[correct].classList.add('correct');
+    }
+    
+    card.querySelector('.feedback').style.display = 'block';
+    answered++;
+    
+    if (answered === quizData.length) {
+        setTimeout(showFinalResults, 1000);
+    }
+}
+
+function showFinalResults() {
+    document.getElementById('main-content').style.display = 'none';
+    const resPage = document.getElementById('results-space');
+    resPage.style.display = 'block';
+    
+    const percentage = Math.round((score / quizData.length) * 100);
+    const grade30 = ((score / quizData.length) * 30).toFixed(1);
+    
+    document.getElementById('final-score').innerText = percentage + "%";
+    document.getElementById('final-grade').innerText = "Voto: " + grade30 + " / 30";
+    
+    let msg = "";
+    if (grade30 >= 27) msg = "🔥 ECCELLENTE! Sei pronto per il lavoro.";
+    else if (grade30 >= 18) msg = "✅ APPROVATO! Continua così.";
+    else msg = "📚 NON IDONEO. Riprova dopo aver ripassato!";
+    
+    document.getElementById('final-msg').innerText = msg;
+    window.scrollTo(0,0);
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
