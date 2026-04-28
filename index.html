@@ -3,45 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITS Quiz Portal</title>
+    <title>ITS Quiz Hub</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .portal-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 90%; }
-        h1 { color: #1e293b; margin-bottom: 10px; }
-        p { color: #64748b; margin-bottom: 30px; }
-        .quiz-button { 
-            display: flex; align-items: center; justify-content: space-between;
-            background: white; border: 2px solid #e2e8f0; padding: 18px; border-radius: 12px;
-            margin-bottom: 15px; text-decoration: none; color: #1e293b; font-weight: 600;
-            transition: 0.3s; 
-        }
-        .quiz-button:hover { border-color: var(--primary); background: #eff6ff; transform: translateY(-3px); }
-        .icon { font-size: 1.5em; }
-        .badge { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px; font-size: 0.7em; }
-        .locked { opacity: 0.6; cursor: not-allowed; background: #f8fafc; }
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+        h1 { color: #1c1e21; }
+        .menu-btn { display: block; background: #007bff; color: white; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-btn:hover { background: #0056b3; }
+        .disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
-
-<div class="portal-card">
-    <h1>🚀 ITS Quiz Hub</h1>
-    <p>Seleziona il modulo per iniziare l'esercitazione</p>
-
-    <a href="networking.html" class="quiz-button">
-        <span><span class="icon">🌐</span> Networking & Sistemi</span>
-        <span class="badge">Disponibile</span>
-    </a>
-
-    <a href="linux.html" class="quiz-button">
-        <span><span class="icon">🐧</span> Linux & Bash</span>
-        <span class="badge" style="background:#fee2e2; color:#991b1b;">Coming Soon</span>
-    </a>
-
-    <a href="#" class="quiz-button locked">
-        <span><span class="icon">🪟</span> Windows Server AD</span>
-    </a>
-</div>
-
+    <div class="card">
+        <h1>🚀 Quiz ITS</h1>
+        <p>Seleziona una materia:</p>
+        
+        <a href="networking.html" class="menu-btn">🌐 Networking</a>
+        
+        <a href="linux.html" class="menu-btn" style="background:#6c757d">🐧 Linux (Prossimamente)</a>
+        <a href="#" class="menu-btn disabled">🪟 Windows Server</a>
+    </div>
 </body>
 </html>
