@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulatore Linux ITS</title>
+    <style>
+        :root { --primary: #ef4444; --bg: #0f172a; }
+        body { font-family: 'Courier New', monospace; background: var(--bg); color: #f8fafc; display: flex; justify-content: center; padding: 20px; }
+        .quiz-card { background: #1e293b; padding: 30px; border-radius: 12px; max-width: 600px; width: 100%; border: 1px solid #334155; }
+        .option { display: block; background: #334155; padding: 12px; margin: 8px 0; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .option:hover { background: #475569; }
+        .correct { background: #22c55e !important; }
+        .wrong { background: #ef4444 !important; }
+        #feedback { margin-top: 15px; font-weight: bold; min-height: 1.2em; }
+        .btn-home { color: #94a3b8; text-decoration: none; display: inline-block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="quiz-card">
+        <a href="index.html" class="btn-home">← Torna alla Home</a>
+        <h2 id="question">Caricamento...</h2>
+        <div id="options"></div>
+        <div id="feedback"></div>
+        <button id="next-btn" style="display:none; margin-top:20px; padding:10px 20px; border-radius:6px; border:none; background:#3b82f6; color:white; cursor:pointer;">Prossima domanda</button>
+    </div>
+
+<script>
+    const questions = [
+        { q: "Quale comando permette di vedere i permessi di un file?", a: ["ls -p", "ls -l", "show -perm", "chmod"], c: 1 },
+        { q: "Quale comando cambia il proprietario di un file?", a: ["chmod", "chown", "chgrp", "usermod"], c: 1 },
+        { q: "Cosa fa il comando 'top'?", a: ["Spegne il sistema", "Mostra i processi in tempo reale", "Vai all'inizio del file", "Installa un pacchetto"], c: 1 },
+        { q: "In quale directory si trovano i log di sistema?", a: ["/etc/log", "/var/log", "/usr/log", "/bin/log"], c: 1 },
+        { q: "Come si concatena l'output di un comando come input di un altro?", a: ["Tramite >", "Tramite <", "Tramite la Pipe |", "Tramite &"], c: 2 },
+        { q: "Cosa significa il permesso 755 su una cartella?", a: ["Sola lettura per tutti", "Tutto per owner, lettura/esecuzione per altri", "Accesso negato a tutti", "Pieno controllo per tutti"], c: 1 },
+        { q: "Quale comando si usa per forzare la chiusura di un processo?", a: ["stop", "kill -9", "exit", "terminate"], c: 1 },
+        { q: "Come si visualizza l'indirizzo IP su Linux?", a: ["ifconfig o ip addr", "ipconfig", "show ip", "network-view"], c: 0 },
+        { q: "Cosa fa 'chmod 400 file.txt'?", a: ["Rende il file scrivibile", "Sola lettura per il proprietario", "Cancella il file", "Nessuno può leggerlo"], c: 1 },
+        { q: "Quale editor di testo è solitamente presente di default in console?", a: ["Notepad", "Word", "Vi / Vim", "Sublime"], c: 2 }
+    ];
+
+    let current = 0;
+    function load() {
+        const item = questions[current];
+        document.getElementById('question').innerText = item.q;
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        document.getElementById('feedback').innerText = '';
+        document.getElementById('next-btn').style.display = 'none';
+        
+        item.a.forEach((opt, i) => {
+            const btn = document.createElement('div');
+            btn.className = 'option';
+            btn.innerText = opt;
+            btn.onclick = () => check(i, btn);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function check(i, btn) {
+        const correct = questions[current].c;
+        if(i === correct) {
+            btn.classList.add('correct');
+            document.getElementById('feedback').innerText = "✅ Esatto!";
+        } else {
+            btn.classList.add('wrong');
+            document.getElementById('feedback').innerText = "❌ Sbagliato!";
+        }
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+        current++;
+        if(current < questions.length) load();
+        else document.getElementById('main-content').innerHTML = "<h1>Quiz Finito!</h1>";
+    };
+    load();
+</script>
+</body>
+</html>
