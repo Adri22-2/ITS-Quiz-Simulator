@@ -10,6 +10,7 @@
         .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 700px; margin-top: 40px; }
         .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
         h1 { margin: 0; color: #1e293b; font-size: 1.6rem; }
+        .progress { font-size: 0.9rem; color: #64748b; font-weight: bold; margin-bottom: 5px; }
         .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
         .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #334155; }
         .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #475569; }
@@ -18,56 +19,55 @@
         .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
         .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #eff6ff; border-left: 5px solid var(--primary); color: #1e3a8a; }
         .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .progress { font-size: 0.85rem; color: #64748b; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
+    <a href="index.html" class="btn-home">← Home</a>
     <div class="header">
-        <div class="progress" id="progress">Domanda 1 di 30</div>
+        <div class="progress" id="progress">Caricamento...</div>
         <h1>Domande Linux di Simulazione</h1>
     </div>
     <div id="quiz-box">
         <div class="question" id="q-text"></div>
         <div id="options"></div>
         <div class="feedback" id="feedback"></div>
-        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda</button>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda →</button>
     </div>
 </div>
 
 <script>
 const quizData = [
-    { q: "Quale comando mostra i permessi dettagliati dei file?", a: ["ls -a", "ls -l", "ls -p", "dir -s"], c: 1, f: "ls -l mostra permessi, proprietario e data." },
-    { q: "Cosa significa il permesso 755?", a: ["Lettura per tutti", "Owner tutto, altri lettura/esecuzione", "Accesso totale", "Nessuno"], c: 1, f: "7 (rwx) owner, 5 (r-x) gli altri." },
-    { q: "Comando per cambiare proprietario?", a: ["chmod", "chown", "chgrp", "usermod"], c: 1, f: "CHOWN = Change Owner." },
-    { q: "Cartella file di configurazione?", a: ["/bin", "/home", "/etc", "/var"], c: 2, f: "/etc contiene le config di sistema." },
-    { q: "Cosa fa 'top'?", a: ["Spegne", "Mostra processi real-time", "Cerca file", "Installa"], c: 1, f: "Monitora CPU e RAM per processo." },
-    { q: "Comando per cartella corrente?", a: ["ls", "whereami", "pwd", "dir"], c: 2, f: "PWD = Print Working Directory." },
-    { q: "Crea cartella?", a: ["mkdir", "mkfile", "newdir", "cd"], c: 0, f: "MKDIR = Make Directory." },
-    { q: "Leggi log real-time?", a: ["cat", "less", "tail -f", "head"], c: 2, f: "Tail -f segue le nuove righe del file." },
-    { q: "Cosa fa '>' in Bash?", a: ["Confronta", "Aggiunge", "Sovrascrive file", "Background"], c: 2, f: "Redirige l'output cancellando il vecchio contenuto." },
-    { q: "Forza chiusura processo?", a: ["kill -1", "kill -9", "kill -15", "stop"], c: 1, f: "kill -9 è il segnale SIGKILL." },
-    { q: "Cartella binari essenziali?", a: ["/root", "/etc", "/bin", "/tmp"], c: 2, f: "/bin contiene comandi base." },
-    { q: "Cosa indica '~'?", a: ["Root", "Home utente", "Precedente", "Errore"], c: 1, f: "Tilde = Home utente corrente." },
-    { q: "Uso disco partizioni?", a: ["du -h", "df -h", "disk-usage", "lsblk"], c: 1, f: "DF = Disk Free." },
-    { q: "Install pacchetti Debian?", a: ["yum", "apt", "dnf", "pkg"], c: 1, f: "APT è il gestore pacchetti Debian/Ubuntu." },
-    { q: "Riavvia sistema?", a: ["exit", "reboot", "stop", "halt"], c: 1, f: "Comando reboot." },
-    { q: "Cosa fa 'chmod +x'?", a: ["Cripta", "Rende eseguibile", "Rende scrivibile", "Nasconde"], c: 1, f: "+x aggiunge il permesso di esecuzione." },
-    { q: "Editor console standard?", a: ["Notepad", "Vi / Vim", "Wordpad", "Sublime"], c: 1, f: "Vi è presente in quasi ogni distro." },
-    { q: "Cosa indica '$?'?", a: ["PID", "Exit Status", "Durata", "Errore"], c: 1, f: "0 = successo, altri valori = errore." },
-    { q: "IP su distro moderne?", a: ["ip addr", "ifconfig", "show ip", "net"], c: 0, f: "ip addr ha sostituito ifconfig." },
-    { q: "Cronologia comandi?", a: ["past", "logs", "history", "recall"], c: 2, f: "Il comando history mostra i comandi passati." },
-    { q: "Cosa fa 'mkdir -p'?", a: ["3 cartelle", "Permessi", "Crea genitori", "Errore"], c: 2, f: "-p crea la gerarchia se manca." },
-    { q: "Cartella log sistema?", a: ["/etc/logs", "/var/log", "/usr/log", "/tmp"], c: 1, f: "/var/log è lo standard." },
-    { q: "Cosa fa 'grep'?", a: ["Cerca file", "Cerca testo", "Copia", "Sposta"], c: 1, f: "Filtra il testo in base a un pattern." },
-    { q: "Mostra partizioni?", a: ["fdisk -l", "ps aux", "man", "grep"], c: 0, f: "fdisk -l elenca i dischi." },
-    { q: "Cos'è 'sudo'?", a: ["Super User Do", "System Under", "Simple Download", "Stop"], c: 0, f: "Privilegi di amministratore." },
-    { q: "Esci da 'less' o 'top'?", a: ["ESC", "CTRL+C", "q", "x"], c: 2, f: "q sta per Quit." },
-    { q: "Versione Kernel?", a: ["version", "show-kernel", "uname -r", "sys"], c: 2, f: "uname -r mostra la release del kernel." },
-    { q: "Comprime cartella?", a: ["zip", "tar -czvf", "compress", "arc"], c: 1, f: "tar con -z usa gzip." },
-    { q: "Shebang corretto?", a: ["#bash", "#! /bin/bash", "//bin/bash", "#/root"], c: 1, f: "Inizia con #! seguito dal percorso." },
-    { q: "Cosa fa 'cd ..'?", a: ["Home", "Cartella superiore", "Precedente", "Chiudi"], c: 1, f: "Sposta nel genitore della cartella." }
+    { q: "Comando per vedere permessi dettagliati dei file?", a: ["ls -a", "ls -l", "ls -p", "dir"], c: 1, f: "ls -l (long) mostra permessi, owner, gruppo e data." },
+    { q: "Cosa indica il permesso 755?", a: ["Solo lettura", "Owner tutto, altri lettura/esecuzione", "Accesso totale a tutti", "Nessuno"], c: 1, f: "7 (rwx) per l'owner, 5 (r-x) per gruppo e altri." },
+    { q: "Comando per cambiare il proprietario di un file?", a: ["chmod", "chown", "chgrp", "usermod"], c: 1, f: "CHOWN sta per 'Change Owner'." },
+    { q: "Directory che contiene i file di configurazione?", a: ["/bin", "/home", "/etc", "/var"], c: 2, f: "/etc è la cartella standard per le config di sistema." },
+    { q: "A cosa serve il comando 'top'?", a: ["Vedere i file grandi", "Monitorare processi in tempo reale", "Andare a inizio file", "Installare"], c: 1, f: "Mostra CPU, RAM e i processi attivi in tempo reale." },
+    { q: "Come visualizzi la cartella attuale?", a: ["ls", "whereami", "pwd", "dir"], c: 2, f: "PWD = Print Working Directory." },
+    { q: "Comando per creare una directory?", a: ["mkdir", "mkfile", "newdir", "cd"], c: 0, f: "MKDIR = Make Directory." },
+    { q: "Leggere log in tempo reale?", a: ["cat", "less", "tail -f", "head"], c: 2, f: "Tail -f (follow) segue le nuove righe aggiunte ai log." },
+    { q: "Cosa fa '>' in Bash?", a: ["Confronta", "Aggiunge a fine file", "Sovrascrive il file", "Background"], c: 2, f: "Redirige l'output cancellando il contenuto precedente." },
+    { q: "Segnale SIGKILL per chiudere un processo?", a: ["kill -1", "kill -9", "kill -15", "stop"], c: 1, f: "kill -9 termina forzatamente qualsiasi processo." },
+    { q: "Cartella dei comandi binari base?", a: ["/root", "/etc", "/bin", "/tmp"], c: 2, f: "/bin contiene comandi come ls, cp, mv." },
+    { q: "Significato di '~'?", a: ["Root", "Home utente corrente", "Cartella precedente", "Errore"], c: 1, f: "La tilde è la scorciatoia per /home/nomeutente." },
+    { q: "Uso del disco per partizione?", a: ["du -h", "df -h", "disk-usage", "lsblk"], c: 1, f: "DF = Disk Free." },
+    { q: "Gestore pacchetti Debian/Ubuntu?", a: ["yum", "apt", "dnf", "pkg"], c: 1, f: "APT è il gestore standard di queste distribuzioni." },
+    { q: "Comando per riavviare?", a: ["exit", "reboot", "stop", "halt"], c: 1, f: "Semplice comando reboot o shutdown -r now." },
+    { q: "Cosa fa 'chmod +x'?", a: ["Cripta", "Rende eseguibile", "Rende scrivibile", "Nasconde"], c: 1, f: "+x aggiunge il bit di esecuzione." },
+    { q: "Editor di testo da terminale standard?", a: ["Notepad", "Vi / Vim", "Wordpad", "Sublime"], c: 1, f: "Vi è presente in quasi ogni sistema Linux." },
+    { q: "Cosa indica '$?'?", a: ["PID", "Exit Status ultimo comando", "Durata", "Errore"], c: 1, f: "0 indica successo, altro indica un errore." },
+    { q: "Vedere IP su Linux moderno?", a: ["ip addr", "ifconfig", "show ip", "net"], c: 0, f: "ip addr ha sostituito il vecchio ifconfig." },
+    { q: "Cronologia dei comandi?", a: ["past", "logs", "history", "recall"], c: 2, f: "Mostra la lista dei comandi digitati in precedenza." },
+    { q: "Cosa fa 'mkdir -p'?", a: ["3 cartelle", "Permessi", "Crea genitori se mancano", "Errore"], c: 2, f: "Crea l'intera gerarchia di cartelle specificata." },
+    { q: "Cartella dei log?", a: ["/etc/logs", "/var/log", "/usr/log", "/tmp"], c: 1, f: "/var/log è dove risiedono i log del sistema." },
+    { q: "Cosa fa 'grep'?", a: ["Cerca file", "Filtra testo", "Copia", "Sposta"], c: 1, f: "Cerca stringhe di testo all'interno di file o output." },
+    { q: "Mostra dischi e partizioni?", a: ["fdisk -l", "ps aux", "man", "grep"], c: 0, f: "fdisk -l elenca i device e le partizioni." },
+    { q: "Cos'è 'sudo'?", a: ["Super User Do", "System Under", "Simple Download", "Stop"], c: 0, f: "Esegue comandi con privilegi di root." },
+    { q: "Tasto per uscire da 'less' o 'top'?", a: ["ESC", "CTRL+C", "q", "x"], c: 2, f: "La lettera 'q' chiude quasi tutti i tool interattivi." },
+    { q: "Versione del Kernel?", a: ["version", "show-kernel", "uname -r", "sys"], c: 2, f: "uname -r (release) mostra il kernel in uso." },
+    { q: "Archiviare e comprimere cartelle?", a: ["zip", "tar -czvf", "compress", "arc"], c: 1, f: "Tar è il tool standard per creare archivi compresi." },
+    { q: "Shebang corretto per Bash?", a: ["#bash", "#!/bin/bash", "//bin/bash", "#/root"], c: 1, f: "Indica al kernel quale interprete usare per lo script." },
+    { q: "Cosa fa 'cd ..'?", a: ["Home", "Torna su di un livello", "Precedente", "Chiudi"], c: 1, f: "Sposta la navigazione nella cartella padre." }
 ];
 
 let current = 0; let answered = false;
@@ -95,7 +95,7 @@ function check(i, btn) {
 }
 function nextQuestion() {
     current++; if(current < quizData.length) loadQ();
-    else document.getElementById('quiz-box').innerHTML = "<h2>Fine Quiz Linux! 🐧</h2><a href='index.html' style='display:block; text-align:center; margin-top:20px; color:#3b82f6;'>Torna alla Home</a>";
+    else document.getElementById('quiz-box').innerHTML = "<h2>Fine Quiz Linux! 🐧</h2><a href='index.html' style='color:#3b82f6;'>Torna alla Home</a>";
 }
 loadQ();
 </script>
