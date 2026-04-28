@@ -5,23 +5,199 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITS Quiz Hub</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 350px; }
-        h1 { color: #1c1e21; }
-        .menu-btn { display: block; background: #007bff; color: white; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; text-decoration: none; font-weight: bold; transition: 0.2s; }
-        .menu-btn:hover { background: #0056b3; }
-        .disabled { background: #ccc; cursor: not-allowed; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 400px; }
+        h1 { color: #1e293b; margin-bottom: 5px; }
+        p { color: #64748b; margin-bottom: 30px; }
+        .menu-btn { display: flex; align-items: center; justify-content: space-between; background: white; border: 2px solid #e2e8f0; padding: 18px; border-radius: 12px; margin-bottom: 15px; text-decoration: none; color: #1e293b; font-weight: 600; transition: 0.3s; }
+        .menu-btn:hover { border-color: #3b82f6; background: #eff6ff; transform: translateY(-3px); }
+        .icon { font-size: 1.3em; margin-right: 10px; }
+        .badge { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px; font-size: 0.75em; }
+        .locked { opacity: 0.6; cursor: not-allowed; background: #f8fafc; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>🚀 Quiz ITS</h1>
-        <p>Seleziona una materia:</p>
-        
-        <a href="networking.html" class="menu-btn">🌐 Networking</a>
-        
-        <a href="linux.html" class="menu-btn" style="background:#6c757d">🐧 Linux (Prossimamente)</a>
-        <a href="#" class="menu-btn disabled">🪟 Windows Server</a>
+        <p>Seleziona una materia per iniziare:</p>
+        <a href="networking.html" class="menu-btn">
+            <span><span class="icon">🌐</span> Networking</span>
+            <span class="badge">Disponibile</span>
+        </a>
+        <a href="linux.html" class="menu-btn">
+            <span><span class="icon">🐧</span> Linux & Bash</span>
+            <span class="badge">Disponibile</span>
+        </a>
+        <a href="#" class="menu-btn locked">
+            <span><span class="icon">🪟</span> Windows Server</span>
+        </a>
     </div>
 </body>
 </html>
+
+#### 2. File `networking.html` (Il Quiz Networking)
+Ho aggiornato il titolo come richiesto e rimosso il numero di versione.
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domande Networking di Simulazione</title>
+    <style>
+        :root { --primary: #3b82f6; --correct: #22c55e; --wrong: #ef4444; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 700px; margin-top: 40px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        .badge-tag { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: inline-block; text-transform: uppercase; }
+        h1 { margin: 0; color: #1e293b; font-size: 1.6rem; }
+        .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #334155; }
+        .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #475569; }
+        .option:hover { background-color: #f8fafc; border-color: var(--primary); }
+        .option.correct { background-color: #dcfce7 !important; border-color: var(--correct); color: #166534; font-weight: bold; }
+        .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #eff6ff; border-left: 5px solid var(--primary); color: #1e3a8a; }
+        .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
+        <div class="header">
+            <div class="badge-tag">Networking</div>
+            <h1>Domande Networking di Simulazione</h1>
+        </div>
+        <div id="quiz-space">
+            </div>
+    </div>
+</body>
+</html>
+
+#### 3. File `linux.html` (Il nuovo Quiz Linux - 30 Domande)
+Questo è il file nuovo, con lo stesso identico stile del primo e 30 domande tecniche.
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domande Linux di Simulazione</title>
+    <style>
+        :root { --primary: #3b82f6; --correct: #22c55e; --wrong: #ef4444; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 700px; margin-top: 40px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        .badge-tag { background: #fee2e2; color: #991b1b; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: inline-block; text-transform: uppercase; }
+        h1 { margin: 0; color: #1e293b; font-size: 1.6rem; }
+        .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #334155; }
+        .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #475569; }
+        .option:hover { background-color: #f8fafc; border-color: var(--primary); }
+        .option.correct { background-color: #dcfce7 !important; border-color: var(--correct); color: #166534; font-weight: bold; }
+        .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #eff6ff; border-left: 5px solid var(--primary); color: #1e3a8a; }
+        .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .progress { font-size: 0.85rem; color: #64748b; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
+    <div class="header">
+        <div class="badge-tag">Linux & Bash</div>
+        <div class="progress" id="progress">Domanda 1 di 30</div>
+        <h1>Domande Linux di Simulazione</h1>
+    </div>
+    
+    <div id="quiz-box">
+        <div class="question" id="q-text"></div>
+        <div id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { q: "Quale comando mostra i permessi dettagliati dei file in una directory?", a: ["ls -a", "ls -l", "ls -p", "dir -s"], c: 1, f: "Il comando 'ls -l' (Long) mostra i permessi (rwx), il proprietario e la data." },
+        { q: "Cosa significa il permesso 755 su una cartella?", a: ["Lettura per tutti", "Owner ha tutto, altri solo lettura/esecuzione", "Accesso totale a chiunque", "Nessuno può entrarci"], c: 1, f: "7 (rwx) per l'owner, 5 (r-x) per gruppo e altri." },
+        { q: "Quale comando cambia il proprietario di un file?", a: ["chmod", "chown", "chgrp", "usermod"], c: 1, f: "CHOWN sta per 'Change Owner'." },
+        { q: "Dove si trovano solitamente i file di configurazione del sistema?", a: ["/bin", "/home", "/etc", "/var"], c: 2, f: "/etc è la cartella standard dei file di configurazione." },
+        { q: "Cosa fa il comando 'top'?", a: ["Mostra i file più grandi", "Mostra i processi in tempo reale", "Vai all'inizio del file", "Installa programmi"], c: 1, f: "Visualizza l'uso della CPU e della RAM per processo." },
+        { q: "Come si visualizza la directory corrente?", a: ["ls", "whereami", "pwd", "dir"], c: 2, f: "PWD = Print Working Directory." },
+        { q: "Quale comando crea una cartella?", a: ["mkdir", "mkfile", "newdir", "cd"], c: 0, f: "MKDIR = Make Directory." },
+        { q: "Come si legge il contenuto di un file di log in tempo reale mentre si aggiorna?", a: ["cat", "less", "tail -f", "head"], c: 2, f: "Tail -f (Follow) segue le nuove righe aggiunte al file." },
+        { q: "In Bash, cosa fa l'operatore '>'?", a: ["Confronta valori", "Aggiunge testo a fine file", "Redirige l'output sovrascrivendo il file", "Esegue in background"], c: 2, f: "Sovrascrive il file. Per aggiungere senza cancellare si usa '>>'." },
+        { q: "Quale comando forza la chiusura di un processo (segnale SIGKILL)?", a: ["kill -1", "kill -9", "kill -15", "stop"], c: 1, f: "kill -9 invia il segnale SIGKILL che non può essere ignorato." },
+        { q: "Quale directory contiene i file binari essenziali per tutti gli utenti?", a: ["/root", "/etc", "/bin", "/tmp"], c: 2, f: "/bin contiene comandi base come ls, cp, mv." },
+        { q: "Cosa indica il simbolo '~'?", a: ["La root del sistema", "La home dell'utente corrente", "La cartella precedente", "Un errore"], c: 1, f: "La tilde è una scorciatoia per /home/nomeutente." },
+        { q: "Quale comando mostra l'utilizzo del disco per ogni partizione?", a: ["du -h", "df -h", "disk-usage", "lsblk"], c: 1, f: "DF = Disk Free." },
+        { q: "Come si installano pacchetti su sistemi Debian/Ubuntu?", a: ["yum install", "apt install", "dnf install", "get-package"], c: 1, f: "APT è il gestore pacchetti standard per Debian." },
+        { q: "Quale comando riavvia il sistema?", a: ["exit", "reboot", "stop", "halt"], c: 1, f: "'reboot' o 'shutdown -r now'." },
+        { q: "Cosa fa 'chmod +x file.sh'?", a: ["Cripta il file", "Rende il file eseguibile", "Rende il file scrivibile", "Nasconde il file"], c: 1, f: "+x aggiunge il permesso di esecuzione (eXecute)." },
+        { q: "Quale editor di testo si trova quasi sempre in console Linux?", a: ["Notepad", "Vi / Vim", "Wordpad", "Sublime"], c: 1, f: "Vi è l'editor standard presente in quasi ogni distribuzione." },
+        { q: "Cosa indica '$?' dopo un comando?", a: ["Il PID del comando", "Il codice di uscita (Exit Status)", "La durata del comando", "Un errore"], c: 1, f: "0 indica successo, qualsiasi altro valore indica un errore." },
+        { q: "Come si vede l'indirizzo IP su una distribuzione moderna?", a: ["ip addr", "ifconfig", "show ip", "network-status"], c: 0, f: "'ip addr' ha sostituito il vecchio 'ifconfig'." },
+        { q: "Quale comando mostra la cronologia dei comandi usati?", a: ["past", "logs", "history", "recall"], c: 2, f: "Mostra la lista dei comandi salvati nel file .bash_history." },
+        { q: "Cosa fa 'mkdir -p a/b/c'?", a: ["Crea 3 cartelle separate", "Crea una cartella con permessi", "Crea le cartelle padre se non esistono", "Errore"], c: 2, f: "-p (parents) crea l'intera gerarchia se mancante." },
+        { q: "In quale directory risiedono i log del sistema?", a: ["/etc/logs", "/var/log", "/usr/log", "/tmp"], c: 1, f: "/var/log è la posizione standard." },
+        { q: "Cosa fa il comando 'grep'?", a: ["Cerca file", "Cerca testo dentro i file", "Copia file", "Sposta file"], c: 1, f: "Global Regular Expression Print, serve a filtrare il testo." },
+        { q: "Quale comando visualizza le partizioni e i dischi collegati?", a: ["fdisk -l", "ps aux", "man", "grep"], c: 0, f: "fdisk -l elenca i dischi e le relative tabelle delle partizioni." },
+        { q: "Cosa significa 'sudo'?", a: ["Super User Do", "System Under Data", "Simple User Download", "Stop User"], c: 0, f: "Esegue il comando con privilegi di amministratore." },
+        { q: "Come si esce da un file aperto con 'less' o 'top'?", a: ["ESC", "CTRL+C", "tasto q", "tasto x"], c: 2, f: "La 'q' sta per Quit." },
+        { q: "Quale comando mostra la versione del Kernel?", a: ["version", "show-kernel", "uname -r", "sys-info"], c: 2, f: "Uname -r (release) mostra la versione del kernel in uso." },
+        { q: "Cosa fa 'tar -czvf archivio.tar.gz cartella/'?", a: ["Estrae un file", "Comprime una cartella in formato gzip", "Sposta una cartella", "Elimina un archivio"], c: 1, f: "-c (create) -z (gzip) -v (verbose) -f (file)." },
+        { q: "Qual è lo 'shebang' corretto per uno script bash?", a: ["#bash", "#! /bin/bash", "//bin/bash", "#/root/bash"], c: 1, f: "Deve essere la prima riga dello script per indicare l'interprete." },
+        { q: "Cosa succede se digiti 'cd ..'?", a: ["Torni alla home", "Vai nella cartella superiore", "Vai nella cartella precedente", "Chiudi il terminale"], c: 1, f: "'..' indica sempre il genitore della cartella attuale." }
+    ];
+
+    let current = 0;
+    let answered = false;
+
+    function loadQ() {
+        answered = false;
+        const d = quizData[current];
+        document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
+        document.getElementById('q-text').innerText = d.q;
+        const optCont = document.getElementById('options');
+        optCont.innerHTML = '';
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        d.a.forEach((o, i) => {
+            const btn = document.createElement('div');
+            btn.className = 'option';
+            btn.innerText = o;
+            btn.onclick = () => check(i, btn);
+            optCont.appendChild(btn);
+        });
+    }
+
+    function check(i, btn) {
+        if(answered) return;
+        answered = true;
+        const d = quizData[current];
+        const opts = document.getElementsByClassName('option');
+        if(i === d.c) {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('wrong');
+            opts[d.c].classList.add('correct');
+        }
+        document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+        document.getElementById('feedback').style.display = 'block';
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        current++;
+        if(current < quizData.length) loadQ();
+        else document.getElementById('quiz-box').innerHTML = "<h2>Quiz Completato! 🚀</h2><p>Ottimo lavoro. Torna alla home per altri moduli.</p>";
+    }
+    loadQ();
+</script>
+</body>
+</html>
+
+Il tuo nuovo portale aggiornato e il quiz di Linux da 30 domande sono pronti! Fammi sapere se è tutto a posto o se vuoi aggiungere altro.
