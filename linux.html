@@ -18,12 +18,16 @@
         .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
         .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #eff6ff; border-left: 5px solid var(--primary); color: #1e3a8a; }
         .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .progress { font-size: 0.85rem; color: #64748b; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
-    <div class="header"><h1>Domande Linux di Simulazione</h1></div>
+    <div class="header">
+        <div class="progress" id="progress">Domanda 1 di 30</div>
+        <h1>Domande Linux di Simulazione</h1>
+    </div>
     <div id="quiz-box">
         <div class="question" id="q-text"></div>
         <div id="options"></div>
@@ -31,6 +35,7 @@
         <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda</button>
     </div>
 </div>
+
 <script>
 const quizData = [
     { q: "Quale comando mostra i permessi dettagliati dei file?", a: ["ls -a", "ls -l", "ls -p", "dir -s"], c: 1, f: "ls -l mostra permessi, proprietario e data." },
@@ -68,6 +73,7 @@ const quizData = [
 let current = 0; let answered = false;
 function loadQ() {
     answered = false; const d = quizData[current];
+    document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
     document.getElementById('q-text').innerText = d.q;
     const optCont = document.getElementById('options'); optCont.innerHTML = '';
     document.getElementById('feedback').style.display = 'none';
@@ -89,7 +95,7 @@ function check(i, btn) {
 }
 function nextQuestion() {
     current++; if(current < quizData.length) loadQ();
-    else document.getElementById('quiz-box').innerHTML = "<h2>Fine! 🚀</h2>";
+    else document.getElementById('quiz-box').innerHTML = "<h2>Fine Quiz Linux! 🐧</h2><a href='index.html' style='display:block; text-align:center; margin-top:20px; color:#3b82f6;'>Torna alla Home</a>";
 }
 loadQ();
 </script>
