@@ -18,20 +18,63 @@
         .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
         .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #eff6ff; border-left: 5px solid var(--primary); color: #1e3a8a; }
         .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .progress { font-size: 0.85rem; color: #64748b; margin-bottom: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
-        <div class="header">
-            <h1>Domande Networking di Simulazione</h1>
-        </div>
-        <div id="quiz-box">
-            <div class="question" id="q-text"></div>
-            <div id="options"></div>
-            <div class="feedback" id="feedback"></div>
-            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda</button>
-        </div>
+<div class="container">
+    <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
+    <div class="header">
+        <div class="progress" id="progress">Domanda 1 di 30</div>
+        <h1>Domande Networking di Simulazione</h1>
     </div>
-    </body>
+    <div id="quiz-box">
+        <div class="question" id="q-text"></div>
+        <div id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda</button>
+    </div>
+</div>
+
+<script>
+// Qui ho messo le tue domande di Networking (ne aggiungo alcune come esempio, metti le tue!)
+const quizData = [
+    { q: "Qual è la funzione principale del protocollo ARP?", a: ["Associare IP a indirizzo MAC", "Risolvere nomi di dominio", "Assegnare IP dinamicamente", "Criptare i pacchetti"], c: 0, f: "ARP (Address Resolution Protocol) serve a trovare l'indirizzo fisico (MAC) conoscendo l'IP." },
+    { q: "Quale livello del modello OSI si occupa del routing?", a: ["Livello 1 - Fisico", "Livello 2 - Data Link", "Livello 3 - Network", "Livello 4 - Transport"], c: 2, f: "Il livello Network (Rete) gestisce l'instradamento dei pacchetti tramite indirizzi IP." },
+    { q: "Cosa si intende per 'Default Gateway'?", a: ["Il server DNS primario", "L'indirizzo del router per uscire dalla rete locale", "L'indirizzo del PC client", "Una porta USB del server"], c: 1, f: "È il punto di uscita di una LAN verso altre reti o Internet." },
+    { q: "Quale porta usa il protocollo HTTPS di default?", a: ["80", "21", "443", "22"], c: 2, f: "HTTPS usa la porta 443 (SSL/TLS), mentre HTTP usa la 80." },
+    { q: "A cosa serve il comando 'ping'?", a: ["A scaricare file", "A testare la connettività tra due host", "A spegnere un server remoto", "A vedere la password del router"], c: 1, f: "Il ping invia pacchetti ICMP Echo Request per verificare se un host risponde." }
+    // Aggiungi qui le altre tue domande seguendo questo formato!
+];
+
+let current = 0; let answered = false;
+function loadQ() {
+    answered = false; const d = quizData[current];
+    document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
+    document.getElementById('q-text').innerText = d.q;
+    const optCont = document.getElementById('options'); optCont.innerHTML = '';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    d.a.forEach((o, i) => {
+        const btn = document.createElement('div'); btn.className = 'option';
+        btn.innerText = o; btn.onclick = () => check(i, btn);
+        optCont.appendChild(btn);
+    });
+}
+function check(i, btn) {
+    if(answered) return; answered = true; const d = quizData[current];
+    const opts = document.getElementsByClassName('option');
+    if(i === d.c) btn.classList.add('correct');
+    else { btn.classList.add('wrong'); opts[d.c].classList.add('correct'); }
+    document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+    document.getElementById('feedback').style.display = 'block';
+    document.getElementById('next-btn').style.display = 'block';
+}
+function nextQuestion() {
+    current++; if(current < quizData.length) loadQ();
+    else document.getElementById('quiz-box').innerHTML = "<h2>Fine Quiz Networking! 🌐</h2>";
+}
+loadQ();
+</script>
+</body>
 </html>
