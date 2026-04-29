@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sfida Giornaliera: OSPF Routing</title>
+    <style>
+        :root { --primary: #0ea5e9; --correct: #10b981; --wrong: #ef4444; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 700px; margin-top: 40px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        h1 { margin: 0; color: #0f172a; font-size: 1.6rem; }
+        .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .progress { font-size: 0.9rem; color: #64748b; font-weight: bold; margin-bottom: 5px; }
+        .daily-badge { display: inline-block; background: #fef08a; color: #854d0e; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; }
+        .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #1e293b; }
+        .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #334155; }
+        .option:hover { background-color: #f0f9ff; border-color: var(--primary); }
+        .option.correct { background-color: #d1fae5 !important; border-color: var(--correct); color: #065f46; font-weight: bold; }
+        .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #f0f9ff; border-left: 5px solid var(--primary); color: #0369a1; }
+        .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="btn-home">← Torna alla Home</a>
+    <div class="header">
+        <div class="progress" id="progress">Caricamento...</div>
+        <h1>OSPF Routing (CCNA)</h1>
+        <div class="daily-badge">📅 Quiz del Giorno</div>
+    </div>
+    <div id="quiz-box">
+        <div class="question" id="q-text"></div>
+        <div id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda →</button>
+    </div>
+</div>
+
+<script>
+const questionPool = [
+    { q: "Quale algoritmo usa OSPF per calcolare il percorso migliore?", a: ["Bellman-Ford", "Dijkstra (SPF)", "DUAL", "Spanning Tree"], c: 1, f: "OSPF usa l'algoritmo Shortest Path First di Dijkstra." },
+    { q: "Qual è la Distanza Amministrativa (AD) di OSPF?", a: ["90", "100", "110", "120"], c: 2, f: "OSPF ha un'AD di 110. (EIGRP è 90, RIP è 120)." },
+    { q: "Quale indirizzo Multicast usano i router OSPF (AllSPFRouters)?", a: ["224.0.0.5", "224.0.0.6", "224.0.0.9", "224.0.0.10"], c: 0, f: "224.0.0.5 è per tutti i router OSPF, 224.0.0.6 è solo per i DR/BDR." },
+    { q: "Come viene calcolato il costo di un'interfaccia in OSPF?", a: ["Ritardo", "Hop count", "100 Mbps / Bandwidth", "Affidabilità"], c: 2, f: "Il costo predefinito è Reference Bandwidth (100Mbps) diviso la larghezza di banda." },
+    { q: "Qual è l'area obbligatoria in una topologia OSPF multi-area?", a: ["Area 1", "Area 10", "Area 0 (Backbone)", "Area Stub"], c: 2, f: "Tutte le aree devono connettersi fisicamente o logicamente all'Area 0." },
+    { q: "Cosa significa lo stato 'FULL' in OSPF?", a: ["Database sincronizzati", "Router spento", "Cercando vicini", "Errore di password"], c: 0, f: "Lo stato FULL indica che i vicini hanno database LSDB identici." },
+    { q: "In una rete multi-accesso (Ethernet), chi gestisce gli aggiornamenti?", a: ["ABR", "ASBR", "DR (Designated Router)", "Root Bridge"], c: 2, f: "Il DR riceve e distribuisce le LSA per ridurre il traffico." },
+    { q: "Quale pacchetto OSPF viene usato per scoprire i vicini?", a: ["LSU", "LSA", "HELLO", "DBD"], c: 2, f: "I pacchetti Hello servono a scoprire vicini e mantenere l'adiacenza." },
+    { q: "Intervallo Hello predefinito su reti Ethernet?", a: ["5 secondi", "10 secondi", "30 secondi", "60 secondi"], c: 1, f: "Su Ethernet è 10 secondi, con un Dead Timer di 40 secondi." },
+    { q: "Quale router connette l'Area 0 ad altre aree?", a: ["ASBR", "ABR", "Internal Router", "Backbone Router"], c: 1, f: "L'Area Border Router (ABR) collega aree diverse." },
+    { q: "Cos'è il Router ID (RID) in OSPF?", a: ["Il nome del router", "Un valore 32-bit (formato IP) univoco", "L'indirizzo MAC", "La versione del software"], c: 1, f: "Il RID identifica univocamente il router nel dominio OSPF." },
+    { q: "Qual è l'ordine di selezione del Router ID?", a: ["IP statico > Loopback più alta > IP fisico più alto", "IP fisico più alto > Loopback", "Casuale", "ID area"], c: 0, f: "Priorità: Comando statico, poi Loopback più alta, poi interfaccia fisica attiva più alta." },
+    { q: "Quale pacchetto contiene le vere informazioni di routing (LSA)?", a: ["Hello", "DBD", "LSR", "LSU"], c: 3, f: "Link State Update (LSU) trasporta i Link State Advertisements (LSA)." },
+    { q: "Cosa succede se i Dead Timer dei vicini non corrispondono?", a: ["L'adiacenza non si forma", "Funziona lo stesso", "Il router esplode", "Usano il più basso"], c: 0, f: "Hello e Dead timer devono coincidere tra i vicini." },
+    { q: "Un router che connette OSPF a un altro protocollo (es. EIGRP) è un:", a: ["ABR", "ASBR", "DR", "BDR"], c: 1, f: "Autonomous System Boundary Router (ASBR)." },
+    { q: "Tipo di LSA generata da ogni router per descrivere i suoi link?", a: ["Tipo 1", "Tipo 2", "Tipo 3", "Tipo 5"], c: 0, f: "La LSA Tipo 1 (Router LSA) descrive il router stesso e le sue interfacce." },
+    { q: "Cosa descrive la LSA Tipo 2?", a: ["Rotte esterne", "Rete multi-accesso (generata dal DR)", "Rotte riassunte", "Area 0"], c: 1, f: "La LSA Tipo 2 (Network LSA) è generata dal DR per descrivere il segmento Ethernet." },
+    { q: "Qual è la wildcard mask per la subnet 255.255.255.248?", a: ["0.0.0.7", "0.0.0.15", "0.0.0.255", "0.0.0.3"], c: 0, f: "255 - 248 = 7. Quindi 0.0.0.7." },
+    { q: "Quale stato segue 'ExStart' nel processo di adiacenza?", a: ["Init", "Exchange", "Loading", "2-Way"], c: 1, f: "Dopo ExStart (scelta master/slave) si passa a Exchange." },
+    { q: "In quale stato viene eletto il DR/BDR?", a: ["Down", "Init", "2-Way", "Full"], c: 2, f: "L'elezione avviene nello stato 2-Way." },
+    { q: "Priorità predefinita di un'interfaccia OSPF?", a: ["0", "1", "100", "255"], c: 1, f: "La priorità di default è 1." },
+    { q: "Cosa succede se la priorità OSPF è impostata a 0?", a: ["Diventa DR", "Non può mai diventare DR o BDR", "È il backup", "Spegne OSPF"], c: 1, f: "Un router con priorità 0 è un DROTHER e non partecipa all'elezione." },
+    { q: "Protocollo IP usato da OSPF?", a: ["88", "89", "6", "17"], c: 1, f: "OSPF usa il protocollo IP 89 direttamente sopra il livello IP." },
+    { q: "Comando per attivare OSPF con ID processo 10?", a: ["router ospf 10", "ip ospf 10", "network ospf 10", "ospf enable 10"], c: 0, f: "Si usa 'router ospf [process-id]'." },
+    { q: "Cosa fa il comando 'passive-interface'?", a: ["Spegne l'interfaccia", "Invia Hello ma non riceve", "Smette di inviare Hello (non forma adiacenze)", "Migliora la banda"], c: 2, f: "Annuncia la rete ma non tenta di formare adiacenze su quel link." },
+    { q: "In OSPF, un'area 'Stub' non riceve:", a: ["LSA Tipo 1", "LSA Tipo 2", "LSA Tipo 5 (esterne)", "Hello"], c: 2, f: "Le aree stub bloccano le rotte esterne per risparmiare memoria." },
+    { q: "La LSA Tipo 3 è generata da:", a: ["DR", "ASBR", "ABR", "Tutti"], c: 2, f: "L'ABR genera LSA Tipo 3 per annunciare reti di un'area in un'altra." },
+    { q: "MTU deve corrispondere tra i vicini?", a: ["No", "Sì, altrimenti si blocca in EXCHANGE", "Solo su IPv6", "Solo su router vecchi"], c: 1, f: "Se gli MTU differiscono, i database non si sincronizzano." },
+    { q: "Comando per vedere il vicinato OSPF?", a: ["show ip route", "show ip ospf neighbor", "show ip ospf database", "show running-config"], c: 1, f: "Mostra lo stato (FULL, 2-WAY) e l'ID dei vicini." },
+    { q: "Cosa indica l'indirizzo 224.0.0.6?", a: ["Tutti i router", "Solo DR e BDR", "Solo router Cisco", "Area 0"], c: 1, f: "È l'indirizzo multicast su cui i DR/BDR ascoltano gli aggiornamenti dagli altri." }
+];
+
+// --- LOGICA ROTAZIONE (20 DOMANDE AL GIORNO) ---
+function seededRandom(seed) {
+    let x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+}
+
+const today = new Date();
+const todaySeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+function getDailyQuestions(pool, seed, amount) {
+    let shuffled = [...pool];
+    let localSeed = seed;
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        let j = Math.floor(seededRandom(localSeed++) * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, amount);
+}
+
+const NUM_DOMANDE_AL_GIORNO = 20; 
+const quizData = getDailyQuestions(questionPool, todaySeed, NUM_DOMANDE_AL_GIORNO);
+
+let current = 0; let answered = false;
+
+function loadQ() {
+    answered = false; const d = quizData[current];
+    document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
+    document.getElementById('q-text').innerText = d.q;
+    const optCont = document.getElementById('options'); optCont.innerHTML = '';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    d.a.forEach((o, i) => {
+        const btn = document.createElement('div'); btn.className = 'option';
+        btn.innerText = o; btn.onclick = () => check(i, btn);
+        optCont.appendChild(btn);
+    });
+}
+
+function check(i, btn) {
+    if(answered) return; answered = true; const d = quizData[current];
+    const opts = document.getElementsByClassName('option');
+    if(i === d.c) btn.classList.add('correct');
+    else { btn.classList.add('wrong'); opts[d.c].classList.add('correct'); }
+    document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+    document.getElementById('feedback').style.display = 'block';
+    document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+    current++; 
+    if(current < quizData.length) loadQ();
+    else document.getElementById('quiz-box').innerHTML = "<h2>Sfida OSPF Completata! 🏆</h2><p>Ottimo lavoro. Torna domani per altre 20 domande!</p><a href='index.html' style='display:block; margin-top:20px; color:#0ea5e9; font-weight:bold;'>← Torna alla Dashboard</a>";
+}
+
+loadQ();
+</script>
+</body>
+</html>
