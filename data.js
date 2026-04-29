@@ -145,7 +145,6 @@ const ccnaData = {
             { q: "Qual è la wildcard mask per la subnet 255.255.255.252?", a: ["0.0.0.3", "0.0.0.255", "0.0.3.255", "255.255.255.0"], c: 0, f: "Sottrai la mask da 255.255.255.255." },
             { q: "Perché usare una Loopback per il RID?", a: ["Perché non va mai giù (always UP)", "Perché è più veloce", "Perché è sicura", "Perché usa meno RAM"], c: 0, f: "Garantisce stabilità al processo OSPF." }
         ],
-        
        vlan: [
             // --- DA 1 A 15 ---
             { q: "Protocollo di trunking standard IEEE?", a: ["802.1Q", "ISL", "802.3ad", "802.11"], c: 0, f: "802.1Q è lo standard universale per il tagging VLAN." },
