@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCNA Prep Hub</title>
+    <script src="data.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 450px; }
@@ -13,35 +14,37 @@
         .menu-btn:hover { border-color: #0ea5e9; background: #f0f9ff; transform: translateY(-3px); }
         .icon { font-size: 1.3em; margin-right: 10px; }
         .badge { background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 6px; font-size: 0.8em; font-weight: bold; }
+        .badge.in-arrivo { background: #f1f5f9; color: #64748b; }
+        .disabled { opacity: 0.6; pointer-events: none; }
         .footer { margin-top: 20px; font-size: 0.85rem; color: #94a3b8; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>🛠️ CCNA Prep Hub</h1>
-        <p>Le tue sfide giornaliere per la certificazione.</p>
+        <p>Scegli il modulo da ripassare oggi.</p>
         
-        <a href="dhcp.html" class="menu-btn">
-            <span><span class="icon">🔄</span> DHCP & DNS</span>
-            <span class="badge">Attivo</span>
-        </a>
-
-        <a href="ospf.html" class="menu-btn">
-            <span><span class="icon">🛣️</span> OSPF Routing</span>
-            <span class="badge">Attivo</span>
-        </a>
-
-        <a href="vlan.html" class="menu-btn">
-            <span><span class="icon">🏗️</span> VLAN & Trunking</span>
-            <span class="badge">Attivo</span>
-        </a>
-
-        <a href="stp.html" class="menu-btn">
-            <span><span class="icon">🌲</span> Spanning Tree (STP)</span>
-            <span class="badge">Nuovo</span>
-        </a>
+        <div id="menu-container"></div>
         
-        <div class="footer">I quiz si rimescolano ogni 24 ore! ⏳</div>
+        <div class="footer">Seleziona 20 domande random ogni 24 ore! ⏳</div>
     </div>
+
+    <script>
+        const container = document.getElementById('menu-container');
+        
+        ccnaData.modules.forEach(mod => {
+            const isAttivo = mod.status === "Attivo";
+            const linkHref = isAttivo ? `quiz.html?topic=${mod.id}` : '#';
+            const extraClass = isAttivo ? '' : 'disabled';
+            const badgeClass = isAttivo ? 'badge' : 'badge in-arrivo';
+
+            container.innerHTML += `
+                <a href="${linkHref}" class="menu-btn ${extraClass}">
+                    <span><span class="icon">${mod.icon}</span> ${mod.title}</span>
+                    <span class="${badgeClass}">${mod.status}</span>
+                </a>
+            `;
+        });
+    </script>
 </body>
 </html>
