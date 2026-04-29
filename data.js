@@ -75,7 +75,7 @@ const ccnaData = {
             { q: "I server DNS Root si trovano:", a: ["Al vertice della gerarchia DNS", "In fondo alla gerarchia", "Solo in Europa", "Dentro i router aziendali"], c: 0, f: "Ci sono 13 indirizzi IP logici per i root server che gestiscono il mondo." },
             { q: "Quale comando permette di vedere gli IP attualmente assegnati dal DHCP Cisco?", a: ["show ip dhcp binding", "show ip dhcp pool", "show ip route", "show running-config"], c: 0, f: "Mostra la tabella che lega l'IP assegnato al MAC address del client." },
             { q: "Se un PC è impostato per ottenere l'IP automaticamente ma non c'è un server DHCP attivo:", a: ["Si auto-assegna un IP APIPA (169.254.x.x)", "Non ha nessun IP", "Prende l'IP 0.0.0.0", "Usa l'IP del vicino"], c: 0, f: "I sistemi Windows e Mac usano APIPA per comunicare almeno nella LAN locale." }
-        ]
+        ],
         ospf: [
             { q: "Qual è la Distanza Amministrativa di OSPF?", a: ["110", "90", "120", "1"], c: 0, f: "OSPF ha AD 110." },
             { q: "Algoritmo usato da OSPF?", a: ["SPF (Dijkstra)", "DUAL", "Bellman-Ford", "STP"], c: 0, f: "Shortest Path First calcola l'albero dei percorsi minimi." },
