@@ -77,11 +77,12 @@ const ccnaData = {
             { q: "Se un PC è impostato per ottenere l'IP automaticamente ma non c'è un server DHCP attivo:", a: ["Si auto-assegna un IP APIPA (169.254.x.x)", "Non ha nessun IP", "Prende l'IP 0.0.0.0", "Usa l'IP del vicino"], c: 0, f: "I sistemi Windows e Mac usano APIPA per comunicare almeno nella LAN locale." }
         ],
         ospf: [
+            // --- DA 1 A 15 ---
             { q: "Qual è la Distanza Amministrativa di OSPF?", a: ["110", "90", "120", "1"], c: 0, f: "OSPF ha AD 110." },
             { q: "Algoritmo usato da OSPF?", a: ["SPF (Dijkstra)", "DUAL", "Bellman-Ford", "STP"], c: 0, f: "Shortest Path First calcola l'albero dei percorsi minimi." },
             { q: "Quale comando attiva OSPF con ID processo 10?", a: ["router ospf 10", "network ospf 10", "ip ospf process 10", "routing ospf 10"], c: 0, f: "Il numero del processo è locale al router." },
-            { q: "Area obbligatoria in una rete multi-area?", a: ["Area 0", "Area 1", "Area 100", "Area backbone 1"], c: 0, f: "Tutte le aree devono connettersi fisicamente o logicamente all'Area 0." },
-            { q: "Come calcola il costo OSPF per default?", a: ["100 Mbps / larghezza di banda", "Numero di hop", "Ritardo del link", "MTU"], c: 0, f: "La formula è Reference Bandwidth / Interface Bandwidth." },
+            { q: "Area obbligatoria in una rete multi-area?", a: ["Area 0", "Area 1", "Area 100", "Area backbone 1"], c: 0, f: "Tutte le aree devono connettersi all'Area 0." },
+            { q: "Come calcola il costo OSPF per default?", a: ["100 Mbps / larghezza di banda", "Numero di hop", "Ritardo del link", "MTU"], c: 0, f: "Formula: Reference Bandwidth / Interface Bandwidth." },
             { q: "Indirizzo Multicast per AllSPFRouters?", a: ["224.0.0.5", "224.0.0.6", "224.0.0.9", "224.0.0.10"], c: 0, f: "Tutti i router OSPF ascoltano sul 224.0.0.5." },
             { q: "Stato finale di adiacenza tra due router in una rete point-to-point?", a: ["FULL", "2-WAY", "EXCHANGE", "LOADING"], c: 0, f: "Lo stato FULL indica sincronizzazione completa." },
             { q: "Quale router ha la priorità più alta nell'elezione DR?", a: ["Quello con il valore priority più alto", "Quello col MAC più basso", "Quello col RID più basso", "Quello più vecchio"], c: 0, f: "Default priority è 1, il valore più alto vince." },
@@ -90,9 +91,61 @@ const ccnaData = {
             { q: "OSPF Hello Timer predefinito su Ethernet?", a: ["10 secondi", "30 secondi", "5 secondi", "60 secondi"], c: 0, f: "Sulle reti broadcast è 10 secondi." },
             { q: "Quale LSA descrive i router all'interno di un'area?", a: ["Tipo 1", "Tipo 2", "Tipo 3", "Tipo 5"], c: 0, f: "LSA Tipo 1 (Router LSA) è generato da ogni router." },
             { q: "Un router ABR è:", a: ["Un router tra due aree", "Un router interno", "Il router centrale", "Un router con una sola area"], c: 0, f: "Area Border Router connette un'area all'Area 0." },
-            { q: "Cosa succede se il Dead Timer scade?", a: ["L'adiacenza viene rimossa", "Il router riavvia", "Cambia il RID", "Non succede nulla"], c: 0, f: "Il router viene considerato 'morto' e rimosso dalla topologia." },
-            { q: "Comando per vedere i vicini OSPF?", a: ["show ip ospf neighbor", "show ip route ospf", "show ospf neighbors", "show ip ospf database"], c: 0, f: "Fondamentale per il troubleshooting delle adiacenze." }
+            { q: "Cosa succede se il Dead Timer scade?", a: ["L'adiacenza viene rimossa", "Il router riavvia", "Cambia il RID", "Non succede nulla"], c: 0, f: "Il router viene considerato morto e rimosso dalla topologia." },
+            { q: "Comando per vedere i vicini OSPF?", a: ["show ip ospf neighbor", "show ip route ospf", "show ospf neighbors", "show ip ospf database"], c: 0, f: "Fondamentale per il troubleshooting delle adiacenze." },
+
+            // --- DA 16 A 30 ---
+            { q: "Qual è la priorità di default di un'interfaccia OSPF?", a: ["1", "0", "64", "255"], c: 0, f: "Il valore di default è 1. Se impostata a 0, il router non parteciperà all'elezione DR/BDR." },
+            { q: "In quale stato i router decidono chi sarà Master e chi Slave?", a: ["ExStart", "Exchange", "Init", "Loading"], c: 0, f: "In ExStart viene determinato l'ordine di scambio dei database." },
+            { q: "L'indirizzo Multicast 224.0.0.6 è usato da:", a: ["DR e BDR", "Tutti i router OSPF", "Solo il Root Bridge", "Nessuno"], c: 0, f: "I router non-DR inviano i loro update solo a DR e BDR su questo indirizzo." },
+            { q: "Quale comando cambia la Reference Bandwidth di OSPF?", a: ["auto-cost reference-bandwidth", "ip ospf cost", "bandwidth", "ospf speed"], c: 0, f: "Necessario per link moderni oltre i 100Mbps." },
+            { q: "Cosa significa LSA?", a: ["Link State Advertisement", "Link Static Address", "Local State Access", "Log System Alert"], c: 0, f: "È il pacchetto di informazioni topologiche inviato dai router." },
+            { q: "Quale tipo di LSA è usato per annunciare rotte esterne?", a: ["Tipo 5", "Tipo 3", "Tipo 2", "Tipo 1"], c: 0, f: "AS External LSA (Tipo 5) trasporta rotte esterne al dominio OSPF." },
+            { q: "Un router ASBR è:", a: ["Un router che connette OSPF a un altro protocollo", "Un router di backup", "Un router nell'area 0", "Un router senza vicini"], c: 0, f: "Autonomous System Boundary Router." },
+            { q: "Quale comando mostra il contenuto del Link State Database?", a: ["show ip ospf database", "show ip route", "show ip ospf interface", "show ip ospf neighbor"], c: 0, f: "Mostra tutti gli LSA ricevuti dal router." },
+            { q: "In una rete Point-to-Point, chi viene eletto come DR?", a: ["Nessuno", "Il router col RID più alto", "Il router più vecchio", "Entrambi"], c: 0, f: "Sulle reti point-to-point non avviene l'elezione DR/BDR." },
+            { q: "Cosa succede se due router OSPF hanno lo stesso Router ID?", a: ["L'adiacenza non si forma", "Si fondono", "Funziona tutto", "Il secondo router esplode"], c: 0, f: "Il RID deve essere univoco in tutto il dominio OSPF." },
+            { q: "Quale stato indica che un router ha ricevuto un Hello ma non il proprio RID?", a: ["Init", "2-Way", "Attempt", "Down"], c: 0, f: "Init significa comunicazione unidirezionale." },
+            { q: "Cosa fa il comando 'default-information originate'?", a: ["Annuncia una rotta di default", "Resetta il router", "Cambia il RID", "Mostra l'IP"], c: 0, f: "Propaga la rotta 0.0.0.0/0 agli altri router OSPF." },
+            { q: "Qual è il valore di default del Dead Timer rispetto all'Hello Timer?", a: ["4 volte l'Hello Timer", "2 volte", "10 volte", "Sono uguali"], c: 0, f: "Default: 10s Hello, 40s Dead." },
+            { q: "Quale comando imposta manualmente il RID?", a: ["router-id <indirizzo>", "id router <indirizzo>", "ip ospf rid", "set rid"], c: 0, f: "Va dato dentro il processo 'router ospf'." },
+            { q: "Il costo di un link GigabitEthernet (1000 Mbps) di default è:", a: ["1", "10", "100", "19"], c: 0, f: "Poiché la ref-bw è 100M, ogni link >= 100M ha costo 1." },
+
+            // --- DA 31 A 45 ---
+            { q: "In OSPF, l'LSA Tipo 2 (Network LSA) è generato da:", a: ["Il Designated Router (DR)", "Ogni router", "L'ABR", "L'ASBR"], c: 0, f: "Il DR descrive tutti i router connessi allo stesso segmento multi-access." },
+            { q: "Quale comando permette di attivare OSPF direttamente su un'interfaccia?", a: ["ip ospf 10 area 0", "router ospf 10", "network 0.0.0.0", "ospf enable"], c: 0, f: "È il metodo moderno alternativo al comando network." },
+            { q: "Cosa si intende per 'ospf area mismatch'?", a: ["Configurazione di aree diverse su link adiacenti", "Process ID diverso", "RID uguale", "MTU diversa"], c: 0, f: "I router non formeranno adiacenza se l'area non coincide." },
+            { q: "In una rete Broadcast, cosa succede se il DR cade?", a: ["Il BDR diventa DR immediatamente", "Si rifà l'elezione da zero", "La rete si ferma", "Il router col RID più basso vince"], c: 0, f: "Il BDR è pronto a subentrare senza ritardi." },
+            { q: "Il messaggio OSPF LSU (Link State Update) contiene:", a: ["Uno o più LSA", "Solo Hello", "Richieste di IP", "Coordinate GPS"], c: 0, f: "LSU è il contenitore usato per inviare le informazioni topologiche." },
+            { q: "In OSPFv3, il supporto è per:", a: ["IPv6", "Solo IPv4", "Solo AppleTalk", "IPX"], c: 0, f: "OSPFv3 è stato riscritto principalmente per gestire IPv6." },
+            { q: "Qual è il valore massimo della metrica (costo) in OSPF?", a: ["65535", "255", "15", "Illimitato"], c: 0, f: "Il costo è un valore a 16 bit." },
+            { q: "Cosa succede se l'MTU non corrisponde tra due vicini OSPF?", a: ["L'adiacenza resta bloccata in EXCHANGE", "Funziona ma è lento", "Il router crasha", "Ignora il problema"], c: 0, f: "Il mismatch dell'MTU impedisce lo scambio del database." },
+            { q: "Quale comando mostra se un'interfaccia è DR, BDR o DRother?", a: ["show ip ospf interface", "show ip ospf neighbor", "show ip route", "show version"], c: 0, f: "Fornisce i dettagli sul ruolo dell'interfaccia." },
+            { q: "OSPF è un protocollo di tipo:", a: ["Link State", "Distance Vector", "Path Vector", "Statico"], c: 0, f: "Mantiene una mappa completa (topologia) della rete." },
+            { q: "Un'area OSPF chiamata 'Stub' non accetta:", a: ["LSA Tipo 5 (esterne)", "Hello", "LSA Tipo 1", "Rotte interne"], c: 0, f: "Le aree Stub ignorano le rotte esterne per risparmiare memoria." },
+            { q: "Il pacchetto DBD (Database Description) contiene:", a: ["Un riassunto degli LSA posseduti", "Tutti i dati della rete", "Solo password", "Richieste di aiuto"], c: 0, f: "Usato per confrontare i database tra vicini." },
+            { q: "Quale comando permette di vedere il tempo trascorso dall'ultima adiacenza?", a: ["show ip ospf neighbor", "show ip ospf", "show version", "uptime ospf"], c: 0, f: "Mostra da quanto tempo i router sono vicini." },
+            { q: "Cosa indica lo stato '2-WAY'?", a: ["I router si vedono ma non scambiano database", "Sincronizzazione completa", "Errore critico", "Il link è spento"], c: 0, f: "Tipico tra due router DRother." },
+            { q: "In OSPF, cosa definisce la wildcard mask nel comando network?", a: ["La porzione di indirizzo IP da controllare", "Il costo", "L'ID del processo", "La priorità"], c: 0, f: "0 significa 'deve coincidere', 255 significa 'ignora'." },
+
+            // --- DA 46 A 60 ---
+            { q: "Quale tipo di LSA è usato per descrivere la rotta verso un ASBR?", a: ["Tipo 4", "Tipo 1", "Tipo 2", "Tipo 3"], c: 0, f: "ASBR Summary LSA (Tipo 4) indica dove si trova l'ASBR." },
+            { q: "L'LSA Tipo 3 (Summary LSA) è generato da:", a: ["ABR", "ASBR", "DR", "Ogni router"], c: 0, f: "Annuncia le rotte di un'area alle altre aree." },
+            { q: "OSPF usa il protocollo IP numero:", a: ["89", "88", "17", "6"], c: 0, f: "OSPF gira direttamente sopra IP (protocol 89)." },
+            { q: "Il processo di elezione DR/BDR avviene in quale stato?", a: ["2-Way", "Init", "Exchange", "Full"], c: 0, f: "L'elezione deve finire prima dello scambio dati." },
+            { q: "Cosa indica un costo OSPF pari a 1?", a: ["Link veloce (FastEthernet o superiore)", "Link lento", "Rotta statica", "Errore"], c: 0, f: "Con ref-bw di 100M, 1 è il costo minimo." },
+            { q: "Quale comando mostra quanti LSA ci sono nel database?", a: ["show ip ospf database", "show ip ospf stats", "show ip ospf lsa", "show running-config"], c: 0, f: "Elenca il numero di Router LSA, Network LSA, ecc." },
+            { q: "In un'area Totally Stubby, cosa si riceve per andare fuori?", a: ["Solo una rotta di default", "Tutte le rotte", "Nulla", "Solo rotte Tipo 3"], c: 0, f: "Blocca LSA 3, 4 e 5 lasciando solo la default." },
+            { q: "Cosa succede se il RID non viene configurato manualmente?", a: ["Usa l'IP più alto delle loopback", "Non parte", "Prende 0.0.0.0", "Usa il MAC"], c: 0, f: "Cerca Loopback, poi le interfacce fisiche attive." },
+            { q: "Quale comando permette di debuggare le adiacenze?", a: ["debug ip ospf adj", "debug ip ospf packet", "show ip ospf neighbor", "debug ospf hello"], c: 0, f: "Mostra gli stati (Init, ExStart, ecc.) in tempo reale." },
+            { q: "Il messaggio LSAck serve a:", a: ["Confermare la ricezione di un LSU", "Salutare i vicini", "Richiedere un IP", "Chiudere la connessione"], c: 0, f: "OSPF richiede conferme per ogni update." },
+            { q: "Sulle interfacce seriali Frame Relay (NBMA), l'Hello timer è:", a: ["30 secondi", "10 secondi", "5 secondi", "60 secondi"], c: 0, f: "Sulle reti non-broadcast è più lento (30s)." },
+            { q: "Cosa indica lo stato 'LOADING'?", a: ["Il router richiede LSA mancanti", "Il router sta riavviando", "Il database è pieno", "C'è un loop"], c: 0, f: "Il router scarica i dettagli tramite LSR." },
+            { q: "In OSPF, cosa si intende per 'Convergence'?", a: ["Tutti i router hanno la stessa visione della rete", "Il router è spento", "I cavi sono collegati", "La password è corretta"], c: 0, f: "Stato in cui il routing è stabile." },
+            { q: "Qual è la wildcard mask per la subnet 255.255.255.252?", a: ["0.0.0.3", "0.0.0.255", "0.0.3.255", "255.255.255.0"], c: 0, f: "Sottrai la mask da 255.255.255.255." },
+            { q: "Perché usare una Loopback per il RID?", a: ["Perché non va mai giù (always UP)", "Perché è più veloce", "Perché è sicura", "Perché usa meno RAM"], c: 0, f: "Garantisce stabilità al processo OSPF." }
         ],
+        
         vlan: [
             { q: "Protocollo di trunking standard IEEE?", a: ["802.1Q", "ISL", "802.3ad", "802.11"], c: 0, f: "802.1Q è lo standard universale per il tagging VLAN." },
             { q: "Quanti bit ha l'identificatore VLAN (VID)?", a: ["12 bit", "8 bit", "16 bit", "4 bit"], c: 0, f: "Con 12 bit si possono avere 4096 VLAN." },
