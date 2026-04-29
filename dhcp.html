@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sfida Giornaliera: DHCP & DNS</title>
+    <style>
+        :root { --primary: #0ea5e9; --correct: #10b981; --wrong: #ef4444; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 700px; margin-top: 40px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        h1 { margin: 0; color: #0f172a; font-size: 1.6rem; }
+        .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .progress { font-size: 0.9rem; color: #64748b; font-weight: bold; margin-bottom: 5px; }
+        .daily-badge { display: inline-block; background: #fef08a; color: #854d0e; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; }
+        .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #1e293b; }
+        .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #334155; }
+        .option:hover { background-color: #f0f9ff; border-color: var(--primary); }
+        .option.correct { background-color: #d1fae5 !important; border-color: var(--correct); color: #065f46; font-weight: bold; }
+        .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #f0f9ff; border-left: 5px solid var(--primary); color: #0369a1; }
+        .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="btn-home">← Torna alla Home</a>
+    <div class="header">
+        <div class="progress" id="progress">Caricamento...</div>
+        <h1>DHCP & DNS</h1>
+        <div class="daily-badge">📅 Quiz del Giorno</div>
+    </div>
+    <div id="quiz-box">
+        <div class="question" id="q-text"></div>
+        <div id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda →</button>
+    </div>
+</div>
+
+<script>
+// POOL DI 30 DOMANDE CCNA (DHCP & DNS)
+const questionPool = [
+    { q: "Quale messaggio invia un client per cercare un server DHCP?", a: ["DHCP REQUEST", "DHCP DISCOVER", "DHCP OFFER", "DHCP ACK"], c: 1, f: "Il processo DORA inizia con il DISCOVER inviato in broadcast." },
+    { q: "Qual è l'IP di destinazione di un pacchetto DHCP DISCOVER?", a: ["255.255.255.255", "127.0.0.1", "0.0.0.0", "169.254.0.1"], c: 0, f: "Viene inviato a tutti gli host della rete (Limited Broadcast)." },
+    { q: "In DORA, cosa rappresenta la 'O'?", a: ["Open", "Option", "Offer", "Output"], c: 2, f: "Il server risponde con un OFFER contenente l'indirizzo IP proposto." },
+    { q: "Quale porta UDP usa il Server DHCP?", a: ["68", "67", "53", "69"], c: 1, f: "Il Server ascolta sulla 67, il Client sulla 68." },
+    { q: "A cosa serve 'ip helper-address'?", a: ["Configurare DNS", "Inoltrare broadcast DHCP a un server remoto", "Bloccare DHCP falsi", "Creare un pool"], c: 1, f: "Trasforma il broadcast in unicast per superare i router." },
+    { q: "Porta UDP usata dal protocollo DNS?", a: ["67", "443", "53", "80"], c: 2, f: "Il DNS opera sulla porta 53." },
+    { q: "Quale comando esclude gli IP da .1 a .10 in un pool Cisco?", a: ["no ip dhcp pool", "ip dhcp excluded-address 192.168.1.1 192.168.1.10", "clear dhcp lease", "exclude 1-10"], c: 1, f: "Si usa 'ip dhcp excluded-address' prima di definire il pool." },
+    { q: "Cos'è l'APIPA?", a: ["IP statico", "IP assegnato se il DHCP fallisce (169.254.x.x)", "Protocollo di routing", "Un tipo di DNS"], c: 1, f: "Automatic Private IP Addressing." },
+    { q: "Quale record DNS associa un nome a un indirizzo IPv4?", a: ["AAAA", "CNAME", "MX", "A"], c: 3, f: "Il record 'A' mappa il nome su un IPv4. 'AAAA' su IPv6." },
+    { q: "Cosa fa il DHCP ACK?", a: ["Rifiuta la richiesta", "Conferma l'assegnazione finale dell'IP", "Spegne il client", "Cerca un DNS"], c: 1, f: "È l'ultimo step del processo DORA." },
+    { q: "Tempo di validità di un indirizzo DHCP?", a: ["Time to live", "Lease Time", "Hold down timer", "Max age"], c: 1, f: "Il Lease Time definisce quanto tempo un client può usare l'IP." },
+    { q: "Comando per vedere i binding DHCP su un router Cisco?", a: ["show ip dhcp binding", "show running-config", "show ip route", "display dhcp"], c: 0, f: "Mostra gli IP associati ai vari MAC address." },
+    { q: "Record DNS per i server di posta?", a: ["NS", "PTR", "MX", "SOA"], c: 2, f: "MX sta per Mail Exchanger." },
+    { q: "Un server DNS 'Authoritative' è:", a: ["Il server principale di una zona", "Un server cache", "Un virus", "Un router"], c: 0, f: "Ha la copia originale e ufficiale dei record di quella zona." },
+    { q: "Cosa succede al T1 (50% del lease)?", a: ["Il client rilascia l'IP", "Il client tenta il rinnovo con il server originale", "Il client cerca un nuovo server", "Il PC si spegne"], c: 1, f: "A metà del tempo il client invia un REQUEST per rinnovare." },
+    { q: "Indirizzo IPv6 del server DNS?", a: ["A", "AAAA", "PTR", "MX"], c: 1, f: "AAAA è il record per indirizzi IPv6." },
+    { q: "Il DNS usa principalmente:", a: ["TCP", "UDP", "ICMP", "ARP"], c: 1, f: "Usa UDP per velocità, ma può usare TCP per zone transfer." },
+    { q: "Quale comando definisce il gateway in un pool Cisco?", a: ["default-router", "gateway", "ip route", "exit"], c: 0, f: "Sotto il DHCP pool si usa 'default-router'." },
+    { q: "FQDN sta per:", a: ["Fast Query Domain Name", "Fully Qualified Domain Name", "File Query Data Network", "Final Query"], c: 1, f: "Esempio: pc1.vendite.azienda.it." },
+    { q: "Il processo DORA è tipico di:", a: ["IPv6", "IPv4", "Entrambi", "DNS"], c: 1, f: "IPv6 usa DHCPv6 o SLAAC, che funzionano diversamente." },
+    { q: "Cosa fa 'ip dhcp pool MYPOOL'?", a: ["Attiva il DNS", "Crea un ambito di indirizzi da assegnare", "Esclude indirizzi", "Spegne il DHCP"], c: 1, f: "Inizia la configurazione del pool sul router." },
+    { q: "Il record PTR serve per:", a: ["DNS Inverso (IP -> Nome)", "Posta", "Sottodomini", "Sicurezza"], c: 0, f: "Pointer record, usato nel Reverse DNS lookup." },
+    { q: "In DHCP, cos'è lo 'Scope'?", a: ["Un cavo", "L'intervallo di IP disponibili", "La maschera", "Il gateway"], c: 1, f: "È il range di IP configurato per la distribuzione." },
+    { q: "Porta UDP del client DHCP?", a: ["67", "68", "53", "161"], c: 1, f: "Il client usa la 68 per ricevere le risposte dal server." },
+    { q: "DHCP NAK significa:", a: ["Indirizzo assegnato", "Richiesta rifiutata/IP non valido", "Server spento", "Prossima domanda"], c: 1, f: "Negative Acknowledgment." },
+    { q: "Un server DNS Ricorsivo:", a: ["Interroga altri server per trovare l'IP", "Risponde solo per la sua zona", "Non usa internet", "È uno switch"], c: 0, f: "Fa tutto il lavoro di ricerca per conto del client." },
+    { q: "SLAAC in IPv6 permette di:", a: ["Ottenere IP senza server DHCPv6", "Criptare il traffico", "Navigare più veloce", "Spegnere il router"], c: 0, f: "Stateless Address Autoconfiguration." },
+    { q: "Comando per forzare il rinnovo IP su Windows?", a: ["ipconfig /all", "ipconfig /renew", "ipconfig /release", "ping"], c: 1, f: "Renew richiede un nuovo lease al server." },
+    { q: "Cosa indica il record CNAME?", a: ["Un alias per un altro nome", "L'IP del server", "Il server di posta", "Il numero seriale"], c: 0, f: "Canonical Name, serve a dare più nomi allo stesso host." },
+    { q: "Indirizzo 0.0.0.0 nel DHCP DISCOVER è:", a: ["Il gateway", "L'IP sorgente temporaneo del client", "L'IP del server", "Un errore"], c: 1, f: "Il client non ha ancora un IP, quindi usa 0.0.0.0 come sorgente." }
+];
+
+// --- LOGICA ROTAZIONE (20 DOMANDE AL GIORNO) ---
+function seededRandom(seed) {
+    let x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+}
+
+const today = new Date();
+const todaySeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+function getDailyQuestions(pool, seed, amount) {
+    let shuffled = [...pool];
+    let localSeed = seed;
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        let j = Math.floor(seededRandom(localSeed++) * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, amount);
+}
+
+const NUM_DOMANDE_AL_GIORNO = 20; 
+const quizData = getDailyQuestions(questionPool, todaySeed, NUM_DOMANDE_AL_GIORNO);
+
+let current = 0; let answered = false;
+
+function loadQ() {
+    answered = false; const d = quizData[current];
+    document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
+    document.getElementById('q-text').innerText = d.q;
+    const optCont = document.getElementById('options'); optCont.innerHTML = '';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    d.a.forEach((o, i) => {
+        const btn = document.createElement('div'); btn.className = 'option';
+        btn.innerText = o; btn.onclick = () => check(i, btn);
+        optCont.appendChild(btn);
+    });
+}
+
+function check(i, btn) {
+    if(answered) return; answered = true; const d = quizData[current];
+    const opts = document.getElementsByClassName('option');
+    if(i === d.c) btn.classList.add('correct');
+    else { btn.classList.add('wrong'); opts[d.c].classList.add('correct'); }
+    document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+    document.getElementById('feedback').style.display = 'block';
+    document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+    current++; 
+    if(current < quizData.length) loadQ();
+    else document.getElementById('quiz-box').innerHTML = "<h2>Sfida Completata! 🏆</h2><p>Hai risposto alle 20 domande di oggi. Torna domani per un set diverso!</p><a href='index.html' style='display:block; margin-top:20px; color:#0ea5e9; font-weight:bold;'>← Torna alla Dashboard</a>";
+}
+
+loadQ();
+</script>
+</body>
+</html>
