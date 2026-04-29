@@ -8,6 +8,7 @@ const ccnaData = {
 
     questions: {
         dhcp: [
+            // --- DOMANDE DA 1 A 15 ---
             { q: "Quale porta UDP usa il Server DHCP?", a: ["67", "68", "53", "161"], c: 0, f: "Il server ascolta sulla porta 67, il client sulla 68." },
             { q: "Cosa significa l'acronimo DORA?", a: ["Discover, Offer, Request, Ack", "Data, Open, Route, Access", "Direct, Over, Real, Active", "Dynamic, Open, Remote, Area"], c: 0, f: "Rappresenta le 4 fasi dello scambio messaggi DHCP." },
             { q: "Quale comando mostra i conflitti di indirizzi IP su un router Cisco?", a: ["show ip dhcp conflict", "show ip dhcp binding", "show ip dhcp pool", "debug dhcp"], c: 0, f: "Mostra gli IP che il router ha rilevato come già in uso." },
@@ -22,8 +23,59 @@ const ccnaData = {
             { q: "Il tempo di lease predefinito in IOS Cisco è:", a: ["24 ore", "1 ora", "7 giorni", "Infinite"], c: 0, f: "Il valore standard è un giorno intero." },
             { q: "Cosa contiene il messaggio DHCP Offer?", a: ["Proposta di indirizzo IP e opzioni", "Richiesta di conferma", "Messaggio di errore", "Conferma finale"], c: 0, f: "Il server propone un IP al client." },
             { q: "Quale comando crea un pool DHCP chiamato 'CLIENTS'?", a: ["ip dhcp pool CLIENTS", "network dhcp pool CLIENTS", "service dhcp CLIENTS", "set dhcp CLIENTS"], c: 0, f: "È il primo comando per configurare il servizio." },
-            { q: "DNS: cosa significa FQDN?", a: ["Fully Qualified Domain Name", "Fast Query Data Network", "File Queue Domain Name", "Fixed Quality Domain Network"], c: 0, f: "È il nome completo del dominio, incluso l'host (es. www.google.com)." }
-        ],
+            { q: "DNS: cosa significa FQDN?", a: ["Fully Qualified Domain Name", "Fast Query Data Network", "File Queue Domain Name", "Fixed Quality Domain Network"], c: 0, f: "È il nome completo del dominio, incluso l'host." },
+
+            // --- DOMANDE DA 16 A 30 ---
+            { q: "Quale tipo di record DNS serve a localizzare i server di posta?", a: ["MX", "A", "PTR", "NS"], c: 0, f: "MX sta per Mail Exchanger." },
+            { q: "Se un client riceve più DHCP Offer, quale sceglie?", a: ["La prima che arriva", "L'IP più basso", "L'IP più alto", "Quella con più opzioni"], c: 0, f: "Il client accetta solitamente la prima offerta ricevuta." },
+            { q: "La porta UDP usata dal Client DHCP per trasmettere è:", a: ["68", "67", "53", "69"], c: 0, f: "Il client trasmette dalla porta 68 verso la 67 del server." },
+            { q: "Cos'è il TTL in un record DNS?", a: ["Time To Live (tempo di cache)", "Total Traffic Limit", "Type Tag Length", "Top Tier Level"], c: 0, f: "Indica per quanti secondi il record può essere cachato prima di rieseguire la query." },
+            { q: "Quale messaggio DHCP usa il client per rilasciare l'IP?", a: ["DHCP Release", "DHCP Decline", "DHCP Cancel", "DHCP NAK"], c: 0, f: "Comunica al server che l'IP è di nuovo disponibile." },
+            { q: "Cosa significa query DNS ricorsiva?", a: ["Il server risolve il nome per conto del client", "Il client chiede a più server", "La query fallisce", "Si usa solo per IPv6"], c: 0, f: "Il server DNS si assume l'onere di trovare la risposta finale." },
+            { q: "Quale record DNS viene usato per il Reverse Lookup (da IP a Nome)?", a: ["PTR", "AAAA", "NS", "SOA"], c: 0, f: "Pointer record (PTR) mappa l'IP al nome host." },
+            { q: "Come si chiama l'attacco in cui si esauriscono tutti gli IP del DHCP?", a: ["DHCP Starvation", "DHCP Spoofing", "MAC Flooding", "SYN Flood"], c: 0, f: "L'attaccante richiede IP all'infinito usando MAC finti." },
+            { q: "La funzione 'DHCP Snooping' serve a:", a: ["Bloccare server DHCP abusivi", "Spiare le password", "Velocizzare il DNS", "Fare il routing"], c: 0, f: "Isola i messaggi DHCP provenienti da porte non fidate." },
+            { q: "Quale opzione DHCP serve a indicare l'IP del server TFTP (es. per telefoni VoIP)?", a: ["Opzione 150", "Opzione 43", "Opzione 6", "Opzione 3"], c: 0, f: "Opzione 150 fornisce l'IP del server TFTP." },
+            { q: "In DHCPv6, quale messaggio sostituisce il DHCP Discover?", a: ["Solicit", "Advertise", "Request", "Hello"], c: 0, f: "In IPv6 il processo inizia con un messaggio di Solicit." },
+            { q: "Quale comando permette di vedere le statistiche di ricezione/invio DHCP?", a: ["show ip dhcp server statistics", "show dhcp stats", "show ip dhcp pool", "show ip route"], c: 0, f: "Mostra il conteggio dettagliato dei messaggi DORA." },
+            { q: "Cosa fa un client se rileva che l'IP offerto dal DHCP è già in uso?", a: ["Invia un DHCP Decline", "Invia un DHCP Release", "Si spegne", "Accetta comunque"], c: 0, f: "Invia un Decline e ricomincia il processo DORA." },
+            { q: "Quale livello della gerarchia DNS gestisce i domini .com, .org, .it?", a: ["TLD (Top-Level Domain)", "Root", "Authoritative", "Second-Level"], c: 0, f: "Sono i domini di primo livello." },
+            { q: "Il file HOSTS locale viene consultato:", a: ["Prima del server DNS", "Dopo il server DNS", "Solo se il DNS fallisce", "Mai"], c: 0, f: "I sistemi operativi controllano prima il file HOSTS locale." },
+
+            // --- DOMANDE DA 31 A 45 ---
+            { q: "In DHCPv6, il messaggio 'Advertise' corrisponde a:", a: ["DHCP Offer", "DHCP Discover", "DHCP Request", "DHCP Ack"], c: 0, f: "È la risposta del server al messaggio di Solicit." },
+            { q: "Perché il DHCP Request viene inviato in broadcast?", a: ["Per avvisare gli altri server che l'offerta è stata accettata", "Perché non sa dove sia il server", "Perché lo switch lo richiede", "Perché è più veloce"], c: 0, f: "Informa gli altri server DHCP che possono liberare gli IP che avevano proposto." },
+            { q: "Un record DNS di tipo NS indica:", a: ["I Name Server autoritativi per la zona", "L'indirizzo IPv4", "Il server di posta", "L'IP del gateway"], c: 0, f: "Indica quali server gestiscono quel dominio." },
+            { q: "In DHCP, cosa succede se il client riceve un DHCP NAK?", a: ["Deve ricominciare il processo DORA", "Accetta l'IP comunque", "Invia un pacchetto Release", "Usa un IP statico"], c: 0, f: "Negative Acknowledgment: il server rifiuta la richiesta e si ricomincia." },
+            { q: "Quale comando IOS esclude gli IP da 192.168.1.1 a 192.168.1.10?", a: ["ip dhcp excluded-address 192.168.1.1 192.168.1.10", "exclude 192.168.1.1 192.168.1.10", "dhcp exclude 192.168.1.1 192.168.1.10", "no dhcp pool 192.168.1.1"], c: 0, f: "Il comando accetta un range specificando IP iniziale e finale." },
+            { q: "DHCP Snooping classifica le porte dello switch in:", a: ["Trusted e Untrusted", "Active e Passive", "Root e Designated", "Trunk e Access"], c: 0, f: "Le porte verso i server DHCP legittimi devono essere impostate come Trusted." },
+            { q: "Cosa significa SLAAC in ambito IPv6?", a: ["Stateless Address Auto Configuration", "Static Local Address Auto Control", "Stateful Large Address Allocation", "Simple Line Address Access"], c: 0, f: "Permette a un host IPv6 di auto-configurarsi senza un server DHCPv6." },
+            { q: "Il DNS dinamico (DDNS) serve a:", a: ["Aggiornare automaticamente i record DNS quando l'IP cambia", "Cambiare la porta del DNS", "Velocizzare le query", "Criptare il traffico"], c: 0, f: "Associa gli IP dinamici assegnati dal DHCP a nomi di dominio fissi." },
+            { q: "L'opzione DHCP 43 viene usata per:", a: ["Fornire l'IP del Wireless LAN Controller (WLC)", "Impostare il DNS", "Definire la subnet mask", "Assegnare il gateway"], c: 0, f: "Fornisce informazioni specifiche del vendor (come i WLC Cisco)." },
+            { q: "Un server DNS autoritativo è quello che:", a: ["Possiede i record originali di una determinata zona", "Fa solo da cache", "Inoltra le richieste", "Blocca i siti web"], c: 0, f: "È il server responsabile finale per quel dominio specifico." },
+            { q: "Cosa contiene il record DNS SOA (Start of Authority)?", a: ["Informazioni amministrative e timer della zona", "L'IP del server di posta", "L'alias del nome", "Nessuna delle precedenti"], c: 0, f: "Contiene dati vitali come il seriale di zona e i tempi di refresh." },
+            { q: "In quale scenario l'ip helper-address è indispensabile?", a: ["Quando client e server DHCP sono in subnet diverse", "Sempre", "Solo per IPv6", "Solo se si usa OSPF"], c: 0, f: "Un router non inoltra i broadcast. L'helper-address li converte in unicast." },
+            { q: "L'attacco 'DNS Spoofing' (o Cache Poisoning) consiste nel:", a: ["Inserire dati falsi nella cache del server DNS", "Spegnere il server DNS", "Rubare gli IP del pool", "Monitorare il traffico"], c: 0, f: "Indirizza gli utenti verso siti maligni falsificando le risposte DNS." },
+            { q: "Nel comando 'network 192.168.1.0 255.255.255.0' del DHCP Cisco, cosa si definisce?", a: ["Il range di indirizzi da assegnare", "L'IP del router", "Il server DNS", "La porta di ascolto"], c: 0, f: "Definisce la subnet da cui il pool pescherà gli indirizzi." },
+            { q: "Cosa succede quando il tempo di lease di un IP arriva al 50%?", a: ["Il client invia un DHCP Request per rinnovarlo", "Il client rilascia l'IP", "L'IP scade immediatamente", "Viene eseguito un reboot"], c: 0, f: "Il client entra in fase di rinnovo (T1) e contatta il server originale." },
+
+            // --- DOMANDE DA 46 A 60 ---
+            { q: "Quale messaggio ICMPv6 usa un host in SLAAC per chiedere i dati di rete al router?", a: ["Router Solicitation (RS)", "Router Advertisement (RA)", "Neighbor Solicit", "Echo Request"], c: 0, f: "L'host invia un RS per sollecitare una risposta immediata dal router." },
+            { q: "Il messaggio Router Advertisement (RA) in IPv6 viene inviato:", a: ["Periodicamente dai router", "Solo se richiesto", "Mai", "Solo dai PC"], c: 0, f: "I router inviano RA periodicamente per informare gli host sulla rete." },
+            { q: "In DHCPv6 Stateful, chi assegna gli indirizzi IP?", a: ["Il server DHCPv6", "Il router tramite RA", "L'host stesso", "Nessuno"], c: 0, f: "Lo Stateful funziona esattamente come il DHCP classico in IPv4." },
+            { q: "Un record DNS TXT viene spesso usato per:", a: ["Sistemi anti-spam (SPF, DKIM)", "Mappare gli IP", "I server di posta", "Il reverse lookup"], c: 0, f: "Contiene testo arbitrario leggibile dalle macchine per la sicurezza del dominio." },
+            { q: "Cosa fa il comando 'dns-server 8.8.8.8' all'interno di un pool DHCP Cisco?", a: ["Comunica ai client quale server DNS usare", "Trasforma il router in un server DNS", "Configura il DNS del router", "Blocca il DNS di Google"], c: 0, f: "Passa l'indirizzo del DNS primario ai client che richiedono l'IP." },
+            { q: "La porta usata dal client DHCPv6 è la:", a: ["546", "547", "67", "68"], c: 0, f: "In IPv6 le porte cambiano: 546 per il client e 547 per il server." },
+            { q: "Che tipo di indirizzo usa il comando ip helper-address come destinazione?", a: ["Un indirizzo Unicast", "Un indirizzo Broadcast", "Un indirizzo Multicast", "Un indirizzo Anycast"], c: 0, f: "Trasforma il broadcast originale del client in un pacchetto unicast verso il server." },
+            { q: "Nella risoluzione DNS iterativa, se un server non conosce la risposta:", a: ["Fornisce l'IP di un altro server a cui chiedere", "Risponde con un errore", "Cerca lui la risposta", "Spegne la connessione"], c: 0, f: "Rimanda il client a un server più autorevole." },
+            { q: "Cosa succede se si assegna un IP statico a un PC all'interno del pool DHCP senza escluderlo?", a: ["Si rischia un conflitto di IP", "Il DHCP lo riconosce e non lo usa", "Il PC si disconnette", "Tutto funziona senza problemi"], c: 0, f: "Il DHCP potrebbe assegnare quell'IP a un altro PC creando un conflitto." },
+            { q: "Il comando 'default-router 192.168.1.254' in un pool DHCP Cisco serve a:", a: ["Assegnare il Gateway predefinito ai client", "Impostare l'IP del router", "Attivare OSPF", "Nessuna delle precedenti"], c: 0, f: "Dice ai client quale IP usare per uscire dalla propria subnet." },
+            { q: "Che cos'è l'EUI-64 usato talvolta in SLAAC?", a: ["Un metodo per creare l'ID interfaccia IPv6 usando il MAC address", "Un protocollo di crittografia", "Un tipo di switch", "Il nome di un router"], c: 0, f: "Prende il MAC a 48 bit e inserisce FFFE in mezzo per arrivare a 64 bit." },
+            { q: "Cosa succede quando scade il tempo di lease completo di un IP?", a: ["Il client deve smettere di usare l'IP e rinegoziare", "Il client continua a usarlo", "Il server si spegne", "Viene assegnato lo stesso IP"], c: 0, f: "Se non rinnovato entro il limite, l'IP torna libero nel pool." },
+            { q: "I server DNS Root si trovano:", a: ["Al vertice della gerarchia DNS", "In fondo alla gerarchia", "Solo in Europa", "Dentro i router aziendali"], c: 0, f: "Ci sono 13 indirizzi IP logici per i root server che gestiscono il mondo." },
+            { q: "Quale comando permette di vedere gli IP attualmente assegnati dal DHCP Cisco?", a: ["show ip dhcp binding", "show ip dhcp pool", "show ip route", "show running-config"], c: 0, f: "Mostra la tabella che lega l'IP assegnato al MAC address del client." },
+            { q: "Se un PC è impostato per ottenere l'IP automaticamente ma non c'è un server DHCP attivo:", a: ["Si auto-assegna un IP APIPA (169.254.x.x)", "Non ha nessun IP", "Prende l'IP 0.0.0.0", "Usa l'IP del vicino"], c: 0, f: "I sistemi Windows e Mac usano APIPA per comunicare almeno nella LAN locale." }
+        ]
         ospf: [
             { q: "Qual è la Distanza Amministrativa di OSPF?", a: ["110", "90", "120", "1"], c: 0, f: "OSPF ha AD 110." },
             { q: "Algoritmo usato da OSPF?", a: ["SPF (Dijkstra)", "DUAL", "Bellman-Ford", "STP"], c: 0, f: "Shortest Path First calcola l'albero dei percorsi minimi." },
