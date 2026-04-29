@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sfida CCNA</title>
+    <script src="data.js"></script>
+    <style>
+        :root { --primary: #0ea5e9; --correct: #10b981; --wrong: #ef4444; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 700px; margin-top: 40px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        h1 { margin: 0; color: #0f172a; font-size: 1.6rem; }
+        .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .progress { font-size: 0.9rem; color: #64748b; font-weight: bold; margin-bottom: 5px; }
+        .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #1e293b; }
+        .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #334155; }
+        .option:hover { background-color: #f0f9ff; border-color: var(--primary); }
+        .option.correct { background-color: #d1fae5 !important; border-color: var(--correct); color: #065f46; font-weight: bold; }
+        .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #f0f9ff; border-left: 5px solid var(--primary); color: #0369a1; }
+        .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
+    <div class="header">
+        <div class="progress" id="progress">Caricamento...</div>
+        <h1 id="quiz-title">Caricamento Quiz...</h1>
+    </div>
+    <div id="quiz-box">
+        <div class="question" id="q-text"></div>
+        <div id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda →</button>
+    </div>
+</div>
+
+<script>
+    // 1. Capisce quale materia hai cliccato leggendo l'URL (es: ?topic=vlan)
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentTopic = urlParams.get('topic'); 
+    
+    // 2. Cerca le informazioni nel file data.js
+    const moduleInfo = ccnaData.modules.find(m => m.id === currentTopic);
+    const questionPool = ccnaData.questions[currentTopic] || [];
+
+    if(!moduleInfo || questionPool.length === 0) {
+        document.getElementById('quiz-box').innerHTML = "<p>Errore: Quiz non trovato o non ci sono domande nel database.</p>";
+    } else {
+        document.getElementById('quiz-title').innerText = "Quiz: " + moduleInfo.title;
+
+        // Logica del Seed Giornaliero (Rimescola ogni 24h)
+        function seededRandom(seed) { let x = Math.sin(seed++) * 10000; return x - Math.floor(x); }
+        const today = new Date();
+        const todaySeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+        function getDailyQuestions(pool, seed, amount) {
+            let shuffled = [...pool]; let localSeed = seed;
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                let j = Math.floor(seededRandom(localSeed++) * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            // Math.min serve a evitare errori se ci sono meno domande di quelle richieste
+            return shuffled.slice(0, Math.min(amount, pool.length));
+        }
+
+        const NUM_DOMANDE = 20; 
+        const quizData = getDailyQuestions(questionPool, todaySeed, NUM_DOMANDE);
+
+        let current = 0; let answered = false;
+
+        function loadQ() {
+            answered = false; const d = quizData[current];
+            document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
+            document.getElementById('q-text').innerText = d.q;
+            const optCont = document.getElementById('options'); optCont.innerHTML = '';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            d.a.forEach((o, i) => {
+                const btn = document.createElement('div'); btn.className = 'option';
+                btn.innerText = o; btn.onclick = () => check(i, btn);
+                optCont.appendChild(btn);
+            });
+        }
+
+        function check(i, btn) {
+            if(answered) return; answered = true; const d = quizData[current];
+            const opts = document.getElementsByClassName('option');
+            if(i === d.c) btn.classList.add('correct');
+            else { btn.classList.add('wrong'); opts[d.c].classList.add('correct'); }
+            document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+            document.getElementById('feedback').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            current++; 
+            if(current < quizData.length) loadQ();
+            else document.getElementById('quiz-box').innerHTML = `<h2>Ottimo lavoro! 🏆</h2><p>Hai completato le domande disponibili di ${moduleInfo.title}.</p><a href='index.html' style='display:block; margin-top:20px; color:#0ea5e9; font-weight:bold;'>← Torna alla Dashboard</a>`;
+        }
+
+        loadQ();
+    }
+</script>
+</body>
+</html>
