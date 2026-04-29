@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sfida Giornaliera: STP</title>
+    <style>
+        :root { --primary: #0ea5e9; --correct: #10b981; --wrong: #ef4444; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background-color: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 700px; margin-top: 40px; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        h1 { margin: 0; color: #0f172a; font-size: 1.6rem; }
+        .btn-home { color: #64748b; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .progress { font-size: 0.9rem; color: #64748b; font-weight: bold; margin-bottom: 5px; }
+        .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #1e293b; }
+        .option { background-color: #ffffff; border: 2px solid #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: #334155; }
+        .option:hover { background-color: #f0f9ff; border-color: var(--primary); }
+        .option.correct { background-color: #d1fae5 !important; border-color: var(--correct); color: #065f46; font-weight: bold; }
+        .option.wrong { background-color: #fee2e2 !important; border-color: var(--wrong); color: #991b1b; font-weight: bold; }
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; background: #f0f9ff; border-left: 5px solid var(--primary); color: #0369a1; }
+        .next-btn { display: none; width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="btn-home">← Torna alla Dashboard</a>
+    <div class="header">
+        <div class="progress" id="progress">Caricamento...</div>
+        <h1>Spanning Tree Protocol (STP)</h1>
+    </div>
+    <div id="quiz-box">
+        <div class="question" id="q-text"></div>
+        <div id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Prossima Domanda →</button>
+    </div>
+</div>
+
+<script>
+const questionPool = [
+    { q: "Qual è la funzione principale di STP?", a: ["Routing tra VLAN", "Evitare loop di Layer 2", "Assegnare IP", "Criptare il traffico"], c: 1, f: "STP blocca le porte ridondanti per evitare loop di broadcast (broadcast storms)." },
+    { q: "Quale Bridge ID vince l'elezione per diventare Root Bridge?", a: ["Il più alto", "Il più basso", "Quello con più porte", "Quello con l'IP più alto"], c: 1, f: "Il Root Bridge è quello con il Bridge ID (Priority + MAC) più basso." },
+    { q: "Priorità predefinita di STP Cisco?", a: ["1", "4096", "32768", "65535"], c: 2, f: "La priorità di default è 32768." },
+    { q: "Cosa sono i BPDU?", a: ["Pacchetti di routing", "Messaggi usati da STP per scambiare informazioni", "Errori di rete", "Frame di dati utente"], c: 1, f: "Bridge Protocol Data Units (BPDU) sono i messaggi che gli switch usano per comunicare tra loro." },
+    { q: "In STP standard (802.1D), quanto dura lo stato di Listening?", a: ["5 secondi", "15 secondi", "20 secondi", "30 secondi"], c: 1, f: "Il Listening dura 15 secondi (Forward Delay)." },
+    { q: "Quale stato della porta scarta i dati ma impara i MAC address?", a: ["Blocking", "Listening", "Learning", "Forwarding"], c: 2, f: "Nello stato Learning, lo switch popola la MAC table ma non inoltra frame di dati." },
+    { q: "Il Root Port è:", a: ["La porta che va verso il Root Bridge con il costo minore", "La porta spenta", "La porta del Root Bridge", "Una porta verso un PC"], c: 0, f: "Ogni switch non-root deve avere esattamente una Root Port." },
+    { q: "Qual è lo standard del Rapid STP (RSTP)?", a: ["802.1Q", "802.1D", "802.1w", "802.1s"], c: 2, f: "RSTP è definito dallo standard IEEE 802.1w." },
+    { q: "In RSTP, quali stati sono fusi nel 'Discarding'?", a: ["Listening e Learning", "Blocking, Listening e Disabled", "Forwarding e Learning", "Solo Blocking"], c: 1, f: "Discarding sostituisce i vecchi stati passivi per velocizzare la convergenza." },
+    { q: "Cos'è il PortFast?", a: ["Un protocollo di routing", "Una funzione che porta la porta subito in Forwarding", "Un modo per accelerare il trunk", "Un virus"], c: 1, f: "PortFast si usa solo su porte collegate a dispositivi finali (PC/Server) per saltare gli stati STP." },
+    { q: "Il costo STP di un link 1 Gbps (standard corto)?", a: ["100", "19", "4", "2"], c: 2, f: "10 Mbps = 100, 100 Mbps = 19, 1 Gbps = 4, 10 Gbps = 2." },
+    { q: "Quale switch ha tutte le porte in stato 'Designated'?", a: ["Switch client", "Root Bridge", "Switch di backup", "Switch spento"], c: 1, f: "Il Root Bridge non ha Root Port, tutte le sue porte attive sono Designated (inoltro)." },
+    { q: "Cosa succede se un Bridge ID ha la priorità uguale?", a: ["Vince il MAC address più basso", "Vince il MAC address più alto", "Viene scelto a caso", "Entrambi sono Root"], c: 0, f: "Il MAC address funge da tie-breaker (spareggio)." },
+    { q: "Quale comando imposta la priorità STP a 4096?", a: ["spanning-tree vlan 1 root", "spanning-tree vlan 1 priority 4096", "spanning-tree set 4096", "vlan 1 priority 4096"], c: 1, f: "Si configura per ogni VLAN in incrementi di 4096." },
+    { q: "BPDU Guard serve a:", a: ["Proteggere le porte PortFast spegnendole se ricevono BPDU", "Velocizzare il boot", "Controllare il traffico", "Bloccare il routing"], c: 0, f: "Evita che qualcuno colleghi uno switch abusivo a una porta destinata a un PC." },
+    { q: "PVST+ significa:", a: ["Protocollo VLAN statico", "Per-VLAN Spanning Tree Plus", "Protocollo voce sicuro", "Private VLAN Standard"], c: 1, f: "È il protocollo Cisco che esegue un'istanza STP separata per ogni VLAN." },
+    { q: "In STP, una porta in stato 'Blocking' può:", a: ["Inviare dati", "Imparare MAC", "Ricevere BPDU", "Inviare BPDU"], c: 2, f: "Ascolta i BPDU per capire se il Root Bridge è ancora attivo." },
+    { q: "Timer di Hello predefinito?", a: ["1 secondo", "2 secondi", "5 secondi", "10 secondi"], c: 1, f: "Viene inviato un BPDU ogni 2 secondi dal Root Bridge." },
+    { q: "Qual è il 'Max Age' timer predefinito?", a: ["10 secondi", "20 secondi", "30 secondi", "50 secondi"], c: 1, f: "È il tempo che uno switch aspetta prima di tentare di ricalcolare la topologia (20 secondi)." },
+    { q: "Cosa indica il flag TCN nei BPDU?", a: ["Traffico Centrato Network", "Topology Change Notification", "Terminazione Cavo Nodo", "Tutto Corretto No"], c: 1, f: "Inviato quando una porta cambia stato per avvisare gli altri switch." },
+    { q: "RSTP ha un tempo di convergenza di circa:", a: ["50 secondi", "30 secondi", "Pochi millisecondi/secondi", "10 minuti"], c: 2, f: "RSTP è drasticamente più veloce dello standard 802.1D." },
+    { q: "Quale ruolo porta RSTP ha una porta che sostituisce la Root Port?", a: ["Designated", "Alternate", "Backup", "Disabled"], c: 1, f: "La porta Alternate è un backup immediato per la Root Port." },
+    { q: "In STP, il costo del percorso è:", a: ["Somma dei costi dei link verso il Root", "Solo il costo del link locale", "Il numero di hop", "La priorità del Root"], c: 0, f: "Si sommano i costi di tutte le interfacce in ingresso verso il Root Bridge." },
+    { q: "Quale comando mostra lo stato delle porte STP?", a: ["show ip route", "show spanning-tree", "show vlan brief", "show interfaces status"], c: 1, f: "Mostra priorità, Root ID e stato delle interfacce (FWD, BLK, ecc.)." },
+    { q: "Se configuro 'spanning-tree vlan 1 root primary', la priorità diventa:", a: ["0", "24576", "4096", "32768"], c: 1, f: "Cisco abbassa la priorità (solitamente a 24576) per forzare l'elezione." },
+    { q: "Perché la priorità deve essere multipla di 4096?", a: ["Perché mancano i bit", "Perché gli ultimi 12 bit sono per l'ID VLAN (Extended System ID)", "È un numero fortunato", "Per compatibilità IPv6"], c: 1, f: "I 16 bit della priorità sono divisi: 4 per la priorità e 12 per il VLAN ID." },
+    { q: "Una porta 'Edge' in RSTP corrisponde a:", a: ["Un trunk", "Una porta con PortFast attivo", "Un Root Bridge", "Una porta bloccata"], c: 1, f: "Le porte Edge sono quelle collegate agli host finali." },
+    { q: "Cosa previene il 'Root Guard'?", a: ["Che un altro switch diventi Root Bridge su quella porta", "Che il router si spenga", "I virus", "Il ricaricamento"], c: 0, f: "Se riceve un BPDU superiore, mette la porta in 'root-inconsistent'." },
+    { q: "UplinkFast serve a:", a: ["Spegne lo switch", "Velocizzare il recupero se cade il link verso il Root", "Dare più banda", "Fare il trunk"], c: 1, f: "Funzione legacy Cisco per velocizzare il passaggio a una porta di backup." },
+    { q: "In una topologia STP, quante porte Designated ci sono per ogni segmento (cavo)?", a: ["Zero", "Una", "Due", "Infinite"], c: 1, f: "Per ogni cavo tra due switch, deve esserci esattamente una porta Designated." }
+];
+
+// LOGICA SEED GIORNALIERO
+function seededRandom(seed) { let x = Math.sin(seed++) * 10000; return x - Math.floor(x); }
+const today = new Date();
+const todaySeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+function getDailyQuestions(pool, seed, amount) {
+    let shuffled = [...pool]; let localSeed = seed;
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        let j = Math.floor(seededRandom(localSeed++) * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, amount);
+}
+
+const NUM_DOMANDE_AL_GIORNO = 20; 
+const quizData = getDailyQuestions(questionPool, todaySeed, NUM_DOMANDE_AL_GIORNO);
+
+let current = 0; let answered = false;
+
+function loadQ() {
+    answered = false; const d = quizData[current];
+    document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
+    document.getElementById('q-text').innerText = d.q;
+    const optCont = document.getElementById('options'); optCont.innerHTML = '';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    d.a.forEach((o, i) => {
+        const btn = document.createElement('div'); btn.className = 'option';
+        btn.innerText = o; btn.onclick = () => check(i, btn);
+        optCont.appendChild(btn);
+    });
+}
+
+function check(i, btn) {
+    if(answered) return; answered = true; const d = quizData[current];
+    const opts = document.getElementsByClassName('option');
+    if(i === d.c) btn.classList.add('correct');
+    else { btn.classList.add('wrong'); opts[d.c].classList.add('correct'); }
+    document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+    document.getElementById('feedback').style.display = 'block';
+    document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+    current++; 
+    if(current < quizData.length) loadQ();
+    else document.getElementById('quiz-box').innerHTML = "<h2>Ottimo lavoro, Root Bridge! 🏆</h2><p>Hai dominato lo Spanning Tree per oggi. Nessun loop in vista!</p><a href='index.html' style='display:block; margin-top:20px; color:#0ea5e9; font-weight:bold;'>← Torna alla Dashboard</a>";
+}
+
+loadQ();
+</script>
+</body>
+</html>
