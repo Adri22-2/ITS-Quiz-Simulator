@@ -1,11 +1,11 @@
 const ccnaData = {
-   modules: [
+    modules: [
         { id: "dhcp", title: "DHCP & DNS", icon: "🔄", status: "Attivo" },
         { id: "ospf", title: "OSPF Routing", icon: "🛣️", status: "Attivo" },
         { id: "vlan", title: "VLAN & Trunking", icon: "🏗️", status: "Attivo" },
         { id: "stp",  title: "Spanning Tree", icon: "🌲", status: "Attivo" },
         { id: "security", title: "Security Fund.", icon: "🛡️", status: "Attivo" },
-        { id: "ipv6", title: "IPv6 Addressing", icon: "🌐", status: "Attivo" } 
+        { id: "ipv6", title: "IPv6 Addressing", icon: "🌐", status: "Attivo" }, // <-- MANCAVA QUESTA VIRGOLA!
         { id: "services", title: "IP Services & Management", icon: "🛠️", status: "Attivo" },
         { id: "automation", title: "Automation & Programmability", icon: "🤖", status: "Attivo" }
     ],
