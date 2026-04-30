@@ -436,6 +436,7 @@ const ccnaData = {
             // ... (Duplicate/variate per arrivare a 60)
             { q: "Quale porta usa SNMP per le query del Manager?", a: ["UDP 161", "UDP 162", "TCP 80", "UDP 67"], c: 0, f: "161 per le query, 162 per le Trap." }
         ],
+        
         automation: [
             { q: "Qual è il vantaggio principale di una rete SDN?", a: ["Centralizzazione del controllo (Control Plane)", "Eliminazione dei router", "Uso esclusivo di fibra", "Maggiore velocità fisica"], c: 0, f: "Il controller ha una visione globale e programmabile della rete." },
             { q: "Quale formato dati usa coppie 'chiave: valore' e molta indentazione?", a: ["YAML", "JSON", "XML", "CSV"], c: 0, f: "YAML è il linguaggio base per Ansible." },
@@ -457,7 +458,7 @@ const ccnaData = {
             { q: "In Python, quale libreria è usata spesso per connettersi ai router?", a: ["Netmiko o Paramiko", "Photoshop", "HTTP-Lib", "RouterOS"], c: 0, f: "Librerie specifiche per SSH e automazione di rete." },
             { q: "Cos'è la 'Virtualizzazione delle funzioni di rete' (NFV)?", a: ["Eseguire Firewall o Router come macchine virtuali", "Usare cavi virtuali", "Simulare la rete con Packet Tracer", "Nessuna"], c: 0, f: "Sposta le funzioni hardware su server standard." },
             { q: "Cosa fa il protocollo NETCONF?", a: ["Usa XML e RPC per configurare i dispositivi", "Sostituisce il WiFi", "Cifra solo le password", "È un virus"], c: 0, f: "Alternativa moderna e programmabile alla vecchia CLI/SNMP." }
-            // ... (Duplicate/variate per arrivare a 60)
+         
         ]
     }
 };
