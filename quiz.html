@@ -66,41 +66,64 @@
             return shuffled.slice(0, Math.min(amount, pool.length));
         }
 
-        // --- CAMBIAMENTO: ORA 30 DOMANDE ---
         const NUM_DOMANDE = 30; 
         const quizData = getDailyQuestions(questionPool, todaySeed, NUM_DOMANDE);
 
         let current = 0; 
         let answered = false;
-        let correctCount = 0; // Contatore risposte esatte
+        let correctCount = 0; 
 
         function loadQ() {
-            answered = false; const d = quizData[current];
+            answered = false; 
+            const d = quizData[current];
             document.getElementById('progress').innerText = `Domanda ${current+1} di ${quizData.length}`;
             document.getElementById('q-text').innerText = d.q;
-            const optCont = document.getElementById('options'); optCont.innerHTML = '';
+            const optCont = document.getElementById('options'); 
+            optCont.innerHTML = '';
             document.getElementById('feedback').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
-            d.a.forEach((o, i) => {
-                const btn = document.createElement('div'); btn.className = 'option';
-                btn.innerText = o; btn.onclick = () => check(i, btn);
+
+            // --- NUOVA LOGICA: RIMESCOLAMENTO OPZIONI ---
+            // Creiamo un array di oggetti per non perdere il riferimento alla risposta corretta (d.c)
+            let shuffledOptions = d.a.map((text, index) => ({
+                text: text,
+                isCorrect: index === d.c
+            }));
+
+            // Mischiamo le opzioni in modo casuale
+            shuffledOptions.sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((option) => {
+                const btn = document.createElement('div'); 
+                btn.className = 'option';
+                btn.innerText = option.text; 
+                
+                btn.onclick = () => {
+                    if(answered) return; 
+                    answered = true;
+                    
+                    const allOptionBtns = document.getElementsByClassName('option');
+                    
+                    if(option.isCorrect) {
+                        btn.classList.add('correct');
+                        correctCount++;
+                    } else {
+                        btn.classList.add('wrong');
+                        // Troviamo e evidenziamo quella corretta tra i bottoni appena creati
+                        for(let b of allOptionBtns) {
+                            // Cerchiamo il testo corrispondente alla risposta corretta originale
+                            if(b.innerText === d.a[d.c]) {
+                                b.classList.add('correct');
+                            }
+                        }
+                    }
+                    
+                    document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
+                    document.getElementById('feedback').style.display = 'block';
+                    document.getElementById('next-btn').style.display = 'block';
+                };
                 optCont.appendChild(btn);
             });
-        }
-
-        function check(i, btn) {
-            if(answered) return; answered = true; const d = quizData[current];
-            const opts = document.getElementsByClassName('option');
-            if(i === d.c) {
-                btn.classList.add('correct');
-                correctCount++; // Incrementa punteggio
-            } else {
-                btn.classList.add('wrong');
-                opts[d.c].classList.add('correct');
-            }
-            document.getElementById('feedback').innerHTML = `<strong>Spiegazione:</strong> ${d.f}`;
-            document.getElementById('feedback').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
         }
 
         function getFinalFeedback(score, total) {
