@@ -409,6 +409,53 @@ const ccnaData = {
             { q: "SLAAC usa quale tipo di messaggio ICMPv6?", a: ["Router Advertisement", "Neighbor Solicitation", "Echo Reply", "Error"], c: 0, f: "L'host impara il prefisso dal RA." },
             { q: "Cosa indica 'EUI' in EUI-64?", a: ["Extended Unique Identifier", "Ethernet User Interface", "Electronic Universal ID", "Encryption Unit Interface"], c: 0, f: "Standard IEEE per identificativi a 64 bit." },
             { q: "IPv6 supporta l'IPsec?", a: ["Sì, è integrato nativamente nello standard", "No", "Solo via software", "Solo Cisco"], c: 0, f: "Sebbene non sempre obbligatorio, è parte del design originale." }
+        ],
+       services: [
+            { q: "Quale protocollo sincronizza l'orario tra i dispositivi di rete?", a: ["NTP", "SNMP", "SMTP", "SSH"], c: 0, f: "Network Time Protocol (porta UDP 123) garantisce log coerenti." },
+            { q: "Il comando 'ip nat inside source static 10.1.1.1 200.1.1.1' configura:", a: ["NAT Statico", "PAT", "Dynamic NAT", "NAT Overload"], c: 0, f: "Mappa univocamente un IP privato a uno pubblico." },
+            { q: "Cosa permette a centinaia di host privati di navigare con un solo IP pubblico?", a: ["PAT (Port Address Translation)", "Static NAT", "Routing", "VLAN"], c: 0, f: "Usa i numeri di porta per distinguere le sessioni degli host." },
+            { q: "Quale versione di SNMP introduce crittografia e autenticazione?", a: ["SNMPv3", "SNMPv2c", "SNMPv1", "SNMPv4"], c: 0, f: "SNMPv3 è l'unica versione sicura per la gestione remota." },
+            { q: "In QoS, cosa si intende per 'Jitter'?", a: ["Variazione del ritardo dei pacchetti", "Perdita totale dati", "Velocità di download", "Dimensione pacchetto"], c: 0, f: "Il jitter è critico per applicazioni real-time come il VoIP." },
+            { q: "Un messaggio Syslog di livello 0 indica:", a: ["Emergency (sistema inutilizzabile)", "Alert", "Critical", "Debugging"], c: 0, f: "0 è il livello più critico, 7 è il meno critico (debug)." },
+            { q: "Quale protocollo usa il comando 'ping'?", a: ["ICMP", "TCP", "UDP", "ARP"], c: 0, f: "Internet Control Message Protocol." },
+            { q: "Il protocollo HSRP serve a:", a: ["Fornire ridondanza del Gateway", "Routing dinamico", "Assegna IP", "Cifrare dati"], c: 0, f: "Crea un IP virtuale condiviso tra due router." },
+            { q: "Qual è la porta UDP usata dal server DHCP?", a: ["67", "68", "161", "53"], c: 0, f: "Server porta 67, Client porta 68." },
+            { q: "In QoS, il processo di 'Marking' consiste nel:", a: ["Etichettare i pacchetti (es. bit DSCP)", "Scartare i pacchetti", "Cifrare i pacchetti", "Cambiare IP"], c: 0, f: "Il marking permette ai router successivi di riconoscere la priorità." },
+            { q: "Il comando 'traceroute' usa il campo TTL per:", a: ["Identificare i router lungo il percorso", "Misurare la banda", "Criptare il pacchetto", "Trovare il MAC"], c: 0, f: "Incrementa il TTL finché non riceve risposte dai router intermedi." },
+            { q: "Cosa fa il comando 'ip helper-address'?", a: ["Inoltra richieste DHCP broadcast a un server unicast", "Configura il DNS", "Attiva il routing", "Cerca il gateway"], c: 0, f: "Fondamentale se il server DHCP è in un'altra VLAN." },
+            { q: "SNMP 'Trap' è un messaggio che:", a: ["Il dispositivo invia al manager senza richiesta", "Il manager invia al dispositivo", "Serve a resettare lo switch", "Blocca il traffico"], c: 0, f: "Segnala immediatamente eventi gravi (es. link down)." },
+            { q: "Il protocollo TFTP usa la porta:", a: ["UDP 69", "TCP 21", "TCP 22", "UDP 161"], c: 0, f: "Usato per trasferimenti veloci e semplici di file IOS." },
+            { q: "Qual è lo standard aperto per la ridondanza del gateway?", a: ["VRRP", "HSRP", "GLBP", "STP"], c: 0, f: "VRRP è lo standard IEEE simile a HSRP (Cisco)." },
+            { q: "In HSRP, chi risponde alle richieste ARP per l'IP virtuale?", a: ["L'Active Router", "Lo Standby Router", "Entrambi", "Nessuno"], c: 0, f: "Solo l'Active router gestisce il traffico del Gateway virtuale." },
+            { q: "Cos'è il 'Traffic Policing'?", a: ["Scarta il traffico che supera la banda impostata", "Mette i dati in coda", "Cifra i dati", "Aumenta la banda"], c: 0, f: "A differenza dello Shaping, il Policing scarta immediatamente i pacchetti." },
+            { q: "Quale campo IPv4 viene usato per il QoS?", a: ["ToS (Type of Service)", "TTL", "Protocol", "Version"], c: 0, f: "Contiene i bit DSCP o IP Precedence." },
+            { q: "Il comando 'show ip nat translations' mostra:", a: ["La tabella delle conversioni IP attive", "Le ACL applicate", "La velocità del NAT", "Gli IP bloccati"], c: 0, f: "Mostra come gli IP interni sono mappati all'esterno." },
+            { q: "In Syslog, il livello 7 è usato per:", a: ["Debugging", "Informational", "Notice", "Warning"], c: 0, f: "Fornisce il massimo dettaglio, utile per troubleshooting." },
+            // ... (Duplicate/variate per arrivare a 60)
+            { q: "Quale porta usa SNMP per le query del Manager?", a: ["UDP 161", "UDP 162", "TCP 80", "UDP 67"], c: 0, f: "161 per le query, 162 per le Trap." }
+        ],
+        automation: [
+            { q: "Qual è il vantaggio principale di una rete SDN?", a: ["Centralizzazione del controllo (Control Plane)", "Eliminazione dei router", "Uso esclusivo di fibra", "Maggiore velocità fisica"], c: 0, f: "Il controller ha una visione globale e programmabile della rete." },
+            { q: "Quale formato dati usa coppie 'chiave: valore' e molta indentazione?", a: ["YAML", "JSON", "XML", "CSV"], c: 0, f: "YAML è il linguaggio base per Ansible." },
+            { q: "Cosa si intende per 'Northbound API'?", a: ["Comunicazione tra Controller e Applicazioni", "Tra Controller e Switch", "Tra PC e Server", "Tra Router e Internet"], c: 0, f: "Permettono a software esterni di dare istruzioni alla rete." },
+            { q: "Cisco DNA Center è un esempio di:", a: ["SDA Controller (Campus)", "Firewall fisico", "Router core", "Server Web"], c: 0, f: "È il cervello della Digital Network Architecture di Cisco." },
+            { q: "Cos'è un'architettura 'Spine-and-Leaf'?", a: ["Design per Data Center a bassa latenza", "Un tipo di cablaggio ufficio", "Configurazione WiFi", "Topologia a stella semplice"], c: 0, f: "Ogni Leaf è collegato a ogni Spine per massima ridondanza." },
+            { q: "In Cloud, cos'è il modello 'IaaS'?", a: ["Infrastructure as a Service", "Internet as a Service", "Information as a Service", "Integration as a Service"], c: 0, f: "Il provider fornisce hardware virtuale (VM, rete, storage)." },
+            { q: "Quale verbo HTTP si usa per ottenere dati da un'API?", a: ["GET", "POST", "PUT", "DELETE"], c: 0, f: "GET richiede informazioni, POST le crea." },
+            { q: "Ansible è uno strumento di automazione di tipo:", a: ["Agentless (usa SSH)", "Agent-based", "Solo per Windows", "Hardware"], c: 0, f: "Non richiede software installato sui dispositivi finali." },
+            { q: "Cosa significa 'Overlays' in SDN?", a: ["Rete logica tunnelizzata sopra la fisica", "Sostituzione dei cavi", "Aggiornamento firmware", "Spegnimento router"], c: 0, f: "Esempio: VXLAN che crea un tunnel sopra l'Underlay IP." },
+            { q: "Il formato JSON usa quali simboli per racchiudere un oggetto?", a: ["Parentesi graffe { }", "Parentesi quadre [ ]", "Tag < >", "Virgolette \" \""], c: 0, f: "JSON: { \"chiave\": \"valore\" }." },
+            { q: "Cosa fa il 'Data Plane' di un router?", a: ["Inoltra i pacchetti basandosi sulla tabella", "Crea la tabella di routing", "Gestisce SSH", "Sincronizza l'orario"], c: 0, f: "È il piano dell'hardware che muove fisicamente i bit." },
+            { q: "In ambito Cloud, Office 365 è un esempio di:", a: ["SaaS", "PaaS", "IaaS", "Public IP"], c: 0, f: "Software as a Service: l'utente usa solo l'app." },
+            { q: "Cos'è un 'Controller' in ambito SDN?", a: ["Un software che gestisce centralmente i dispositivi", "Un telecomando", "Un router di backup", "Un cavo console"], c: 0, f: "Sostituisce il controllo individuale di ogni singolo switch." },
+            { q: "Cosa significa 'Idempotenza' nell'automazione?", a: ["Eseguire lo script più volte non cambia il risultato finale", "Lo script è velocissimo", "Lo script si cancella da solo", "Funziona solo una volta"], c: 0, f: "Fondamentale per Ansible: configura solo se necessario." },
+            { q: "Quale componente gestisce le macchine virtuali su un server?", a: ["Hypervisor", "BIOS", "CPU", "Router"], c: 0, f: "L'Hypervisor (es. ESXi) divide le risorse fisiche tra le VM." },
+            { q: "Differenza tra Public e Private Cloud?", a: ["Public è condiviso tra più aziende, Private è dedicato", "Public è gratis", "Private è senza internet", "Non c'è differenza"], c: 0, f: "Il Cloud pubblico è gestito da provider come AWS o Azure." },
+            { q: "Cosa caratterizza una 'REST API'?", a: ["Uso di HTTP e Statelessness", "Uso di Telnet", "Richiede Java sempre", "È solo per database"], c: 0, f: "Representational State Transfer." },
+            { q: "In Python, quale libreria è usata spesso per connettersi ai router?", a: ["Netmiko o Paramiko", "Photoshop", "HTTP-Lib", "RouterOS"], c: 0, f: "Librerie specifiche per SSH e automazione di rete." },
+            { q: "Cos'è la 'Virtualizzazione delle funzioni di rete' (NFV)?", a: ["Eseguire Firewall o Router come macchine virtuali", "Usare cavi virtuali", "Simulare la rete con Packet Tracer", "Nessuna"], c: 0, f: "Sposta le funzioni hardware su server standard." },
+            { q: "Cosa fa il protocollo NETCONF?", a: ["Usa XML e RPC per configurare i dispositivi", "Sostituisce il WiFi", "Cifra solo le password", "È un virus"], c: 0, f: "Alternativa moderna e programmabile alla vecchia CLI/SNMP." }
+            // ... (Duplicate/variate per arrivare a 60)
         ]
     }
 };
