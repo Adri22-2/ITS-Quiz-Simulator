@@ -6,15 +6,22 @@
     <title>CCNA Prep Hub</title>
     <script src="data.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 450px; }
+        /* Aumentata l'altezza minima e gestito lo scroll se i moduli superano lo schermo */
+        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        /* Larghezza aumentata a 500px per ospitare meglio i titoli lunghi */
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 500px; }
+        
         h1 { color: #0f172a; margin-bottom: 5px; font-size: 2.2rem; }
         p { color: #64748b; margin-bottom: 30px; font-size: 1.1rem; }
+        
         .menu-btn { display: flex; align-items: center; justify-content: space-between; background: white; border: 2px solid #e2e8f0; padding: 18px; border-radius: 12px; margin-bottom: 15px; text-decoration: none; color: #1e293b; font-weight: 600; transition: 0.3s; }
         .menu-btn:hover { border-color: #0ea5e9; background: #f0f9ff; transform: translateY(-3px); }
+        
         .icon { font-size: 1.3em; margin-right: 10px; }
         .badge { background: #e0f2fe; color: #0369a1; padding: 5px 10px; border-radius: 6px; font-size: 0.8em; font-weight: bold; }
         .badge.in-arrivo { background: #f1f5f9; color: #64748b; }
+        
         .disabled { opacity: 0.6; pointer-events: none; }
         .footer { margin-top: 20px; font-size: 0.85rem; color: #94a3b8; }
     </style>
@@ -24,6 +31,7 @@
         <h1>🛠️ CCNA Prep Hub</h1>
         <p>Scegli il modulo da ripassare oggi.</p>
         
+        <!-- Qui verranno iniettati tutti i moduli presenti in data.js -->
         <div id="menu-container"></div>
         
         <div class="footer">Le 30 domande cambiano ogni 24 ore! ⏳</div>
@@ -32,19 +40,24 @@
     <script>
         const container = document.getElementById('menu-container');
         
-        ccnaData.modules.forEach(mod => {
-            const isAttivo = mod.status === "Attivo";
-            const linkHref = isAttivo ? `quiz.html?topic=${mod.id}` : '#';
-            const extraClass = isAttivo ? '' : 'disabled';
-            const badgeClass = isAttivo ? 'badge' : 'badge in-arrivo';
+        // Verifica che ccnaData sia caricato correttamente
+        if (typeof ccnaData !== 'undefined' && ccnaData.modules) {
+            ccnaData.modules.forEach(mod => {
+                const isAttivo = mod.status === "Attivo";
+                const linkHref = isAttivo ? `quiz.html?topic=${mod.id}` : '#';
+                const extraClass = isAttivo ? '' : 'disabled';
+                const badgeClass = isAttivo ? 'badge' : 'badge in-arrivo';
 
-            container.innerHTML += `
-                <a href="${linkHref}" class="menu-btn ${extraClass}">
-                    <span><span class="icon">${mod.icon}</span> ${mod.title}</span>
-                    <span class="${badgeClass}">${mod.status}</span>
-                </a>
-            `;
-        });
+                container.innerHTML += `
+                    <a href="${linkHref}" class="menu-btn ${extraClass}">
+                        <span><span class="icon">${mod.icon}</span> ${mod.title}</span>
+                        <span class="${badgeClass}">${mod.status}</span>
+                    </a>
+                `;
+            });
+        } else {
+            container.innerHTML = "<p style='color:red'>Errore: file data.js non trovato o non configurato.</p>";
+        }
     </script>
 </body>
 </html>
