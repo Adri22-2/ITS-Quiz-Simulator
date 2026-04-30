@@ -5,7 +5,9 @@ const ccnaData = {
         { id: "vlan", title: "VLAN & Trunking", icon: "🏗️", status: "Attivo" },
         { id: "stp",  title: "Spanning Tree", icon: "🌲", status: "Attivo" },
         { id: "security", title: "Security Fund.", icon: "🛡️", status: "Attivo" },
-        { id: "ipv6", title: "IPv6 Addressing", icon: "🌐", status: "Attivo" }    
+        { id: "ipv6", title: "IPv6 Addressing", icon: "🌐", status: "Attivo" } 
+        { id: "services", title: "IP Services & Management", icon: "🛠️", status: "Attivo" },
+        { id: "automation", title: "Automation & Programmability", icon: "🤖", status: "Attivo" }
     ],
 
     questions: {
